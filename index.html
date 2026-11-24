@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>كنوز الفصحى — العرض الاستراتيجي وتنظيم المحتوى</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #F6F3EC;
+      --surface: #FFFFFF;
+      --surface-soft: #FBF9F5;
+      --navy: #162838;
+      --navy-2: #223B50;
+      --teal: #1D6F5D;
+      --teal-soft: #E7F4F0;
+      --gold: #B88728;
+      --gold-soft: #FCF5E3;
+      --coral: #C44536;
+      --coral-soft: #FCECE9;
+      --purple: #6B46C1;
+      --purple-soft: #F3EEFC;
+      --blue: #2563EB;
+      --blue-soft: #ECF3FE;
+      --text: #1F2933;
+      --muted: #5A6772;
+      --border: #E5DEC9;
+      --shadow: 0 10px 30px rgba(22, 40, 56, 0.08);
+      --radius: 16px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Tajawal', 'Segoe UI', 'Tahoma', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .deck {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ===== TOP BAR ===== */
+    .topbar {
+      background: var(--navy);
+      color: #fff;
+      border-bottom: 3px solid var(--gold);
+      padding: 10px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+      z-index: 30;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--gold), #E0B24C);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .brand-text h1 {
+      font-family: 'Amiri', 'Tajawal', serif;
+      font-size: 1.15rem;
+      color: #F4D58D;
+      line-height: 1.2;
+    }
+    .brand-text p {
+      font-size: 0.76rem;
+      color: #C7D3DF;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .slide-pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(244, 213, 141, 0.35);
+      color: #F4D58D;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+    .btn-toc {
+      background: var(--gold);
+      color: var(--navy);
+      border: none;
+      border-radius: 10px;
+      padding: 7px 14px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s, background .15s;
+    }
+    .btn-toc:hover { background: #E0B24C; transform: translateY(-1px); }
+
+    /* ===== QUICK SLIDE STRIP ===== */
+    .slide-strip {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      flex-shrink: 0;
+      scrollbar-width: thin;
+    }
+    .strip-chip {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 4px 12px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all .18s;
+    }
+    .strip-chip:hover { border-color: var(--teal); color: var(--teal); }
+    .strip-chip.active {
+      background: var(--navy);
+      color: #F4D58D;
+      border-color: var(--navy);
+    }
+
+    /* ===== SLIDES VIEWPORT ===== */
+    .slides-stage {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow-y: auto;
+      padding: 26px 34px 34px;
+      animation: fadeSlide .28s ease;
+    }
+    .slide.active { display: block; }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    /* ===== SECTION HEADER ===== */
+    .slide-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 14px;
+      margin-bottom: 22px;
+      border-bottom: 2px solid var(--border);
+    }
+    .slide-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold-soft);
+      color: #8A6112;
+      border: 1px solid #E7D29A;
+      border-radius: 999px;
+      padding: 3px 12px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .slide-title {
+      font-family: 'Amiri', 'Tajawal', serif;
+      font-size: clamp(1.45rem, 2.7vw, 2.15rem);
+      color: var(--navy);
+      line-height: 1.25;
+    }
+    .slide-sub {
+      color: var(--muted);
+      font-size: 0.94rem;
+      margin-top: 4px;
+    }
+    .source-tag {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    /* ===== GRIDS & CARDS ===== */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    @media (max-width: 960px) { .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .grid-3 { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) {
+      .grid-2, .grid-4 { grid-template-columns: 1fr; }
+      .slide { padding: 16px 14px 24px; }
+      .topbar { padding: 9px 14px; }
+      .brand-text p { display: none; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: 0 3px 12px rgba(22,40,56,0.04);
+    }
+    .card h3 {
+      color: var(--navy);
+      font-size: 1.03rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .card p, .card li {
+      font-size: 0.91rem;
+      color: var(--text);
+      line-height: 1.75;
+    }
+    .card ul, .card ol { padding-right: 20px; }
+    .card li + li { margin-top: 6px; }
+
+    .card-teal { border-top: 4px solid var(--teal); }
+    .card-gold { border-top: 4px solid var(--gold); }
+    .card-coral { border-top: 4px solid var(--coral); }
+    .card-purple { border-top: 4px solid var(--purple); }
+    .card-navy { border-top: 4px solid var(--navy); }
+
+    /* ===== INTERACTIVE ZOOM ON HOVER & MOBILE TAP ===== */
+    .zoomable {
+      position: relative;
+      cursor: zoom-in;
+      transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease, border-color 0.24s ease;
+    }
+    @media (hover: hover) {
+      .zoomable:hover {
+        transform: scale(1.028);
+        box-shadow: 0 16px 36px rgba(22, 40, 56, 0.14);
+        border-color: var(--gold);
+        z-index: 6;
+      }
+    }
+    .zoomable::after {
+      content: '🔍';
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      font-size: 0.78rem;
+      opacity: 0.38;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    .zoomable:hover::after { opacity: 0.95; }
+
+    /* Lightbox / Focus Modal when clicked/tapped on mobile or desktop */
+    .zoom-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 28, 40, 0.72);
+      backdrop-filter: blur(3px);
+      z-index: 150;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .zoom-modal.open { display: flex; }
+    .zoom-box {
+      background: var(--surface);
+      border: 2px solid var(--gold);
+      border-radius: 20px;
+      max-width: 680px;
+      width: 100%;
+      max-height: 86vh;
+      overflow-y: auto;
+      padding: 26px 24px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+      animation: zoomPop .2s ease;
+      position: relative;
+    }
+    @keyframes zoomPop {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .zoom-close {
+      position: sticky;
+      top: 0;
+      float: left;
+      background: var(--navy);
+      color: #F4D58D;
+      border: none;
+      border-radius: 10px;
+      padding: 5px 12px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .zoom-content h3, .zoom-content .kpi-val { font-size: 1.35rem; color: var(--navy); margin-bottom: 10px; }
+    .zoom-content p, .zoom-content li { font-size: 1.03rem; line-height: 1.85; }
+    .zoom-content ul, .zoom-content ol { padding-right: 22px; }
+
+    /* ===== KPI CARDS ===== */
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 15px 16px;
+      box-shadow: 0 3px 10px rgba(22,40,56,0.04);
+    }
+    .kpi .kpi-label { font-size: 0.78rem; color: var(--muted); font-weight: 700; padding-left: 20px; }
+    .kpi .kpi-val {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin: 4px 0 2px;
+      direction: ltr;
+      text-align: right;
+      unicode-bidi: plaintext;
+    }
+    .kpi .kpi-note { font-size: 0.79rem; color: var(--teal); font-weight: 600; }
+    .kpi.warn .kpi-note { color: var(--coral); }
+
+    /* ===== BADGES & BANNERS ===== */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .b-teal { background: var(--teal-soft); color: var(--teal); }
+    .b-gold { background: var(--gold-soft); color: #8A6112; }
+    .b-coral { background: var(--coral-soft); color: var(--coral); }
+    .b-purple { background: var(--purple-soft); color: var(--purple); }
+    .b-blue { background: var(--blue-soft); color: var(--blue); }
+    .b-navy { background: #E9EEF3; color: var(--navy); }
+
+    .callout {
+      border-radius: 14px;
+      padding: 15px 18px;
+      border: 1px solid;
+      font-size: 0.91rem;
+      line-height: 1.75;
+    }
+    .callout-gold { background: var(--gold-soft); border-color: #E7D29A; color: #5C4008; }
+    .callout-teal { background: var(--teal-soft); border-color: #B7DFD5; color: #124C3F; }
+    .callout-coral { background: var(--coral-soft); border-color: #F0C2BC; color: #7C241B; }
+    .callout-navy { background: #EDF2F7; border-color: #CBD5E1; color: var(--navy); }
+
+    /* ===== COVER SLIDE ===== */
+    .cover-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #1F3B4D 60%, #1B4D42 100%);
+      color: #fff;
+      border-radius: 22px;
+      padding: 34px 30px;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--gold);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .cover-hero .emblem { font-size: 3rem; margin-bottom: 8px; }
+    .cover-hero h2 {
+      font-family: 'Amiri', 'Tajawal', serif;
+      font-size: clamp(1.95rem, 4.2vw, 2.95rem);
+      color: #F4D58D;
+      line-height: 1.25;
+      margin-bottom: 10px;
+    }
+    .cover-hero p {
+      max-width: 740px;
+      margin: 0 auto;
+      color: #E5EDF5;
+      font-size: 1rem;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 9px;
+      margin-top: 18px;
+    }
+    .hero-pill {
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(244, 213, 141, 0.5);
+      color: #F8E6B5;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .order-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color .15s, transform .15s, box-shadow .15s;
+    }
+    .order-item:hover { border-color: var(--teal); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(22,40,56,0.08); }
+    .order-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--navy);
+      color: #F4D58D;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.82rem;
+      flex-shrink: 0;
+    }
+
+    /* ===== TABLES ===== */
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+    th {
+      background: var(--navy);
+      color: #F4D58D;
+      text-align: right;
+      padding: 11px 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #EFEAE0;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #FAF7F0; }
+
+    /* ===== BARS ===== */
+    .bar-row { margin-bottom: 10px; }
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .bar-track {
+      height: 9px;
+      background: #EAE4D7;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .bar-fill { height: 100%; border-radius: 999px; background: var(--teal); }
+    .bar-fill.gold { background: var(--gold); }
+    .bar-fill.coral { background: var(--coral); }
+    .bar-fill.navy { background: var(--navy); }
+
+    /* ===== KEYWORDS CONTROLS ===== */
+    .kw-toolbar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .kw-inputs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .kw-search {
+      flex: 1;
+      min-width: 220px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: var(--surface-soft);
+      outline: none;
+    }
+    .kw-search:focus { border-color: var(--teal); background: #fff; }
+    .kw-select {
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      background: var(--surface-soft);
+      color: var(--text);
+    }
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .f-btn {
+      border: 1px solid var(--border);
+      background: var(--surface-soft);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .f-btn.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+
+    /* ===== IDEAS SWITCHER (SLIDE 9) ===== */
+    .idea-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .idea-tab {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 9px 14px;
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--navy);
+      cursor: pointer;
+      transition: all .15s;
+      text-align: right;
+    }
+    .idea-tab:hover { border-color: var(--teal); }
+    .idea-tab.active {
+      background: var(--navy);
+      color: #F4D58D;
+      border-color: var(--navy);
+    }
+    .idea-panel { display: none; }
+    .idea-panel.active { display: block; }
+
+    .tashkeel-word {
+      display: inline-block;
+      background: var(--gold-soft);
+      border: 1px solid #E5C878;
+      color: var(--navy);
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin: 3px;
+    }
+
+    /* ===== THUMB MOCKUP ===== */
+    .thumb-card {
+      background: linear-gradient(135deg, #162838, #1E4B40);
+      color: #fff;
+      border: 2px solid var(--gold);
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+    }
+    .btn-detail {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: var(--navy);
+      color: #F4D58D;
+      border: 1px solid var(--navy);
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .15s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-detail:hover {
+      background: var(--teal);
+      border-color: var(--teal);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .comp-link-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      color: var(--navy);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.77rem;
+      font-weight: 700;
+      text-decoration: none;
+      margin: 2px;
+    }
+    .comp-link-pill:hover { border-color: var(--teal); color: var(--teal); }
+    .comp-detail-box {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+    .comp-detail-box h4 {
+      color: var(--navy);
+      font-size: 0.96rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .comp-detail-box ul { padding-right: 18px; }
+    .comp-detail-box li { font-size: 0.88rem; line-height: 1.75; margin-bottom: 4px; }
+    .thumb-word {
+      font-family: 'Amiri', 'Tajawal', serif;
+      font-size: 1.6rem;
+      color: #F4D58D;
+      margin: 6px 0;
+    }
+
+    /* ===== TIMELINE ===== */
+    .step-box {
+      display: flex;
+      gap: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      align-items: flex-start;
+    }
+    .step-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* ===== PERSISTENT AUTHOR FOOTER BOX (APPEARS ON EVERY SLIDE) ===== */
+    .slide-credit-wrap {
+      max-width: 1180px;
+      margin: 22px auto 0;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .author-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1.5px solid var(--gold);
+      border-radius: 12px;
+      padding: 7px 14px;
+      box-shadow: 0 3px 10px rgba(22,40,56,0.06);
+      font-size: 0.82rem;
+      color: var(--navy);
+    }
+    .author-box .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--teal);
+      display: inline-block;
+    }
+    .author-box strong { color: #8A6112; }
+
+    /* ===== FOOTER NAV ===== */
+    .footer-nav {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .nav-btn:hover:not(:disabled) { background: var(--teal); }
+    .nav-btn:disabled { background: #CBD5E1; color: #64748B; cursor: not-allowed; }
+    .progress-wrap {
+      flex: 1;
+      height: 8px;
+      background: #E8E2D4;
+      border-radius: 999px;
+      overflow: hidden;
+      min-width: 50px;
+    }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--gold));
+      transition: width .3s ease;
+    }
+    .footer-credit {
+      background: var(--gold-soft);
+      border: 1px solid #E5C878;
+      color: var(--navy);
+      padding: 5px 12px;
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    @media (max-width: 640px) {
+      .footer-credit { display: none; }
+      .nav-btn { padding: 8px 12px; font-size: 0.82rem; }
+    }
+
+    /* ===== TOC MODAL ===== */
+    .toc-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 25, 35, 0.65);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .toc-modal.open { display: flex; }
+    .toc-box {
+      background: var(--surface);
+      border: 2px solid var(--gold);
+      border-radius: 18px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .toc-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .toc-close {
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    .toc-grid { display: grid; gap: 8px; }
+    .toc-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      text-align: right;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--navy);
+      cursor: pointer;
+    }
+    .toc-link:hover, .toc-link.current {
+      border-color: var(--teal);
+      background: var(--teal-soft);
+    }
+
+    .ltr-num { direction: ltr; unicode-bidi: embed; display: inline-block; }
+  </style>
+</head>
+<body>
+<div class="deck">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">ك</div>
+      <div class="brand-text">
+        <h1>كنوز الفصحى — العرض الاستراتيجي المتكامل</h1>
+        <p>ملف استراتيجي شامل لقناة «كنوز الفصحى» | عرائس • فصحى بالتشكيل • بدون موسيقى</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <span class="slide-pill" id="slideCounter">١ / ١٠</span>
+      <button class="btn-toc" onclick="openTOC()">📋 فهرس الشرائح</button>
+    </div>
+  </header>
+
+  <!-- QUICK STRIP -->
+  <nav class="slide-strip" id="slideStrip"></nav>
+
+  <!-- SLIDES STAGE -->
+  <main class="slides-stage">
+
+    <!-- ==================== SLIDE 1: COVER ==================== -->
+    <section class="slide active" id="slide-1">
+      <div class="container">
+        <div class="cover-hero">
+          <div class="emblem">🏺🎭</div>
+          <h2>قناة «كنوز الفصحى» للأطفال</h2>
+          <p>
+            عرض تقديمي تفاعلي يجمع <strong>قاعدة الكلمات المفتاحية (VidIQ)</strong>،
+            و<strong>تحليل المنافسين</strong>، و<strong>التدقيق الشامل للقناة وفيديوهاتها الأعلى مشاهدة</strong>،
+            و<strong>رؤية السلسلة التفاعلية وأفكارها الأولية الستّ الجاهزة</strong>، وخطة التنفيذ القادمة.
+          </p>
+          <div class="pill-row">
+            <span class="hero-pill">🎭 شخصيات العرائس</span>
+            <span class="hero-pill">📖 فصحى مبسّطة بالتشكيل</span>
+            <span class="hero-pill">❤️ قيم تربوية وإيمانية</span>
+            <span class="hero-pill">🔇 بدون موسيقى تماماً</span>
+            <span class="hero-pill">👨‍👩‍👧 مخاطبة الطفل وولي الأمر</span>
+          </div>
+        </div>
+
+        <div class="callout callout-teal zoomable" style="margin-bottom: 18px;">
+          <strong>💡 تفاعل ذكي مع العرض:</strong> أي بطاقة أو رقم مهم يحمل أيقونة <strong>🔍</strong> يمكنك الوقوف عليه بالسهم على الكمبيوتر أو الضغط عليه في الموبايل لتكبيره وقراءته بوضوح كامل.
+        </div>
+
+        <div class="card card-gold">
+          <h3>🗂️ خريطة العرض التقديمي (مرتّبة حسب محاور العمل)</h3>
+          <div class="grid-2" style="margin-top: 12px;">
+            <div class="order-item" onclick="goToSlide(2)">
+              <span class="order-num">٢</span>
+              <div><strong>قاعدة الكلمات المفتاحية (VidIQ)</strong><br><span style="font-size:.82rem;color:var(--muted);">60 كلمة مفتاحية عالية الجودة مع بحث وفلترة فورية</span></div>
+            </div>
+            <div class="order-item" onclick="goToSlide(3)">
+              <span class="order-num">٣</span>
+              <div><strong>تحليل المنافسين واستلهام البصمة</strong><br><span style="font-size:.82rem;color:var(--muted);">البداية المشوّقة من البيت وتحويلها لهوية كنوز الفصحى</span></div>
+            </div>
+            <div class="order-item" onclick="goToSlide(4)">
+              <span class="order-num">٤</span>
+              <div><strong>التدقيق الشامل للقناة (Channel Audit)</strong><br><span style="font-size:.82rem;color:var(--muted);">أداء الفيديوهات الطويلة والشورتس، الجمهور، وتيرة النشر</span></div>
+            </div>
+            <div class="order-item" onclick="goToSlide(5)">
+              <span class="order-num">٥</span>
+              <div><strong>تحليل فيديو «مغامرة ممتعة في الصحراء»</strong><br><span style="font-size:.82rem;color:var(--muted);">46,590 مشاهدة، أزمة الدقيقة الأولى، وفرصة البحث</span></div>
+            </div>
+            <div class="order-item" onclick="goToSlide(6)">
+              <span class="order-num">٦</span>
+              <div><strong>تحليل فيديو «مرحباً بكم في منزلي»</strong><br><span style="font-size:.82rem;color:var(--muted);">26,844 مشاهدة، +114 مشتركاً، وهيمنة شاشات التلفزيون</span></div>
+            </div>
+            <div class="order-item" onclick="goToSlide(7)">
+              <span class="order-num">٧</span>
+              <div><strong>الرؤية والقيود الأساسية للقناة</strong><br><span style="font-size:.82rem;color:var(--muted);">الثوابت التربوية، التشكيل، لا موسيقى، والفلتر ضد الملل</span></div>
+            </div>
+            <div class="order-item" onclick="goToSlide(8)">
+              <span class="order-num">٨</span>
+              <div><strong>السلسلة والتحدي التفاعلي + الزوايا الثلاث</strong><br><span style="font-size:.82rem;color:var(--muted);">«مفاجآت بيتنا» وتفصيل الزوايا الثلاث لتحدي 5 ثوانٍ</span></div>
+            </div>
+            <div class="order-item" onclick="goToSlide(9)">
+              <span class="order-num">٩</span>
+              <div><strong>تنظيم الفيديوهات (الأفكار الأولية الستّ)</strong><br><span style="font-size:.82rem;color:var(--muted);">السكريبت (A-roll / B-roll)، العناوين، والصور المصغرة</span></div>
+            </div>
+            <div class="order-item" onclick="goToSlide(10)" style="grid-column: 1 / -1;">
+              <span class="order-num">١٠</span>
+              <div><strong>خلاصة البحث (YouTube Studio Research) وخطة التنفيذ القادمة</strong><br><span style="font-size:.82rem;color:var(--muted);">الموسمي مقابل المستمر والتحدي التفاعلي + خطوات التنفيذ من اختيار الزاوية حتى المونتاج</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+    <!-- ==================== SLIDE 2: VIDIQ KEYWORDS ==================== -->
+    <section class="slide" id="slide-2">
+      <div class="container">
+        <div class="slide-header">
+          <div>
+            <span class="slide-kicker">🔑 المحور الأول — Keywords</span>
+            <h2 class="slide-title">قاعدة الكلمات المفتاحية (VidIQ — 60 كلمة مفتاحية)</h2>
+            <p class="slide-sub">الفلترة المطبّقة في الملف: Overall ≥ 60 وحجم بحث شهري تقريبي ≥ 4,000 (10 كلمات عامة + 50 كلمة متخصصة)</p>
+          </div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom: 16px;">
+          <div class="card card-teal zoomable">
+            <h3>🚀 أسرع 3 فرص نمو من القائمة</h3>
+            <ul>
+              <li><strong>اناشيد</strong>: <span class="ltr-num">93,664</span> بحث | منافسة <span class="badge b-teal">Low (18/100)</span> | تقييم <span class="ltr-num">77.33</span> — أفضل نسبة عائد/جهد.</li>
+              <li><strong>قصص اطفال</strong>: <span class="ltr-num">78,358</span> بحث | منافسة <span class="ltr-num">33.6</span> <span class="badge b-teal">Low</span> | تقييم <span class="ltr-num">70.39</span> — العمود الفقري للمحتوى الطويل.</li>
+              <li><strong>islamic stories + for kids</strong>: <span class="ltr-num">449,284</span> + <span class="ltr-num">85,582</span> بحث | <span class="badge b-gold">Low / Medium</span> — بوابة المغتربين.</li>
+            </ul>
+          </div>
+          <div class="card card-coral zoomable" style="grid-column: span 2;">
+            <h3>⚠️ ملاحظة تحريرية مهمة من ملف البحث</h3>
+            <p>
+              عبارات <strong>«التشكيل»</strong>، و<strong>«التهجئة»</strong>، و<strong>«تعليم الصلاة للأطفال»</strong> بصيغها الحرفية لم تجتز فلتر حجم البحث (حجم بحثها صفري أو تحت حد القياس في VidIQ).
+              <br><strong>الحل المعتمد:</strong> يُدمج التشكيل والقراءة والصلاة داخل عناوين قوية من القائمة أدناه (خصوصاً <strong>«قصص اطفال»</strong> و<strong>«الحروف الهجائية للاطفال»</strong>)، ولا تُستخدم كعناوين مستقلة.
+            </p>
+          </div>
+        </div>
+
+        <div class="kw-toolbar">
+          <div class="kw-inputs">
+            <input type="text" id="kwSearch" class="kw-search" placeholder="🔍 ابحث بالكلمة المفتاحية، المحور، أو ملاحظة الاستراتيجية..." oninput="renderKW()" />
+            <select id="kwHubFilter" class="kw-select" onchange="renderKW()">
+              <option value="all">كل المحاور (60)</option>
+              <option value="الأناشيد">الأناشيد</option>
+              <option value="الحروف واللغة">الحروف واللغة</option>
+              <option value="تعليم العربية">تعليم العربية</option>
+              <option value="القصص الإسلامية">القصص الإسلامية / قصص إسلامية</option>
+              <option value="القصص التربوية">القصص التربوية</option>
+              <option value="التربية الإسلامية">التربية الإسلامية</option>
+              <option value="القرآن للأطفال">القرآن للأطفال</option>
+              <option value="التحديات والألغاز">التحديات والألغاز</option>
+              <option value="عام (اكتشاف واسع)">عام (اكتشاف واسع)</option>
+            </select>
+            <select id="kwSort" class="kw-select" onchange="renderKW()">
+              <option value="default">الترتيب الأصلي بالملف</option>
+              <option value="overall_desc">الأعلى تقييماً (Overall ↓)</option>
+              <option value="vol_desc">الأعلى بحثاً (Search Volume ↓)</option>
+              <option value="comp_asc">الأقل منافسة (Low أولاً)</option>
+            </select>
+          </div>
+          <div class="filter-pills">
+            <span style="font-size:.82rem;font-weight:700;color:var(--muted);">استراتيجية الاستخدام:</span>
+            <button class="f-btn active" onclick="setStratFilter('all', this)">الكل</button>
+            <button class="f-btn" onclick="setStratFilter('سلسلة', this)">سلسلة (Series)</button>
+            <button class="f-btn" onclick="setStratFilter('سلسلة + شورتس', this)">سلسلة + شورتس</button>
+            <button class="f-btn" onclick="setStratFilter('دمج', this)">دمج (Cluster)</button>
+            <button class="f-btn" onclick="setStratFilter('فيديو فردي', this)">فيديو فردي (Standalone)</button>
+            <button class="f-btn" onclick="setStratFilter('سلسلة موسمية', this)">سلسلة موسمية</button>
+            <span id="kwCountLabel" style="margin-right:auto;font-size:.82rem;font-weight:700;color:var(--teal);">يعرض: 60 من 60</span>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>الكلمة المفتاحية</th>
+                <th>حجم البحث</th>
+                <th>المنافسة</th>
+                <th>التقييم العام</th>
+                <th>التصنيف / المحور</th>
+                <th>الاستراتيجية</th>
+                <th>توجيه المحتوى (من الجدول)</th>
+              </tr>
+            </thead>
+            <tbody id="kwTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+    <!-- ==================== SLIDE 3: COMPETITORS ==================== -->
+    <section class="slide" id="slide-3">
+      <div class="container">
+        <div class="slide-header">
+          <div>
+            <span class="slide-kicker">🧭 المحور الثاني — المنافسون (5 قنوات)</span>
+            <h2 class="slide-title">تحليل المنافسين: المميزات والعيوب وفيديوهات العمل</h2>
+            <p class="slide-sub">تحليل شامل لـ 5 قنوات في المحتوى العربي للأطفال (بدون موسيقى / فصحى) — اضغط «للمزيد من التفاصيل» لعرض النص الكامل لكل قناة</p>
+          </div>
+        </div>
+
+        <div class="callout callout-gold zoomable" style="margin-bottom: 14px;">
+          <strong>🎬 حالة فيديوهات العمل المقترحة (Outliers):</strong> قناة <strong>Learn with Zakaria - تعلم مع زكريا</strong> هي الوحيدة المحدّد لها حالياً <strong>فيديو للعمل عليه (<code>XIVWZX49_Ak</code>)</strong> و4 فيديوهات Outliers وتحليل «هننفذه ليه؟»، بينما القنوات الأربع الأخرى (Ms Beno Toddlers، Rayan Arabic TV، SIRAJ، سالم وغانم) لم يُحدَّد لها فيديوهات للعمل عليها بعد.
+        </div>
+
+        <!-- 5 COMPETITORS FULL TABLE -->
+        <div class="table-wrap" style="margin-bottom: 18px;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>القناة المنافسة</th>
+                <th>المشتركون</th>
+                <th>الفيديوهات</th>
+                <th>المميزات والعيوب (Strengths &amp; Weaknesses)</th>
+                <th>فيديو العمل المقترح</th>
+                <th>التفاصيل الكاملة</th>
+              </tr>
+            </thead>
+            <tbody id="compTableBody"></tbody>
+          </table>
+        </div>
+
+        <!-- ALL 5 COMPETITORS CARDS GRID -->
+        <div class="grid-2" id="compCardsGrid" style="margin-bottom: 16px;"></div>
+
+        <div class="callout callout-navy zoomable">
+          <strong>🎯 الخلاصة التطبيقية لـ «كنوز الفصحى»:</strong> نجمع بين <strong>البداية الخاطفة بالبيت وبساطة الصور المصغرة وسلسلة الأسئلة</strong> (من Zakaria) + <strong>الاستثمار الصريح في «بدون موسيقى» والتجميعات الطويلة</strong> (من Ms Beno وسالم وغانم) + <strong>التقسيم العمري ومعالجة التحديات التربوية والشخصية التفاعلية</strong> (من Rayan Arabic TV) + <strong>الحضور المنصاتي المتكامل</strong> (من SIRAJ)، مع <strong>تجنّب التكرار وضعف السيو والانقطاع الزمني</strong> عبر شخصيات العرائس الثابتة وسلسلة «مفاجآت بيتنا».
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+    <!-- ==================== SLIDE 4: CHANNEL AUDIT ==================== -->
+    <section class="slide" id="slide-4">
+      <div class="container">
+        <div class="slide-header">
+          <div>
+            <span class="slide-kicker">📊 المحور الثالث — Channel Audit &amp; Optimization</span>
+            <h2 class="slide-title">التحليل الشامل للقناة (Channel Analytics)</h2>
+            <p class="slide-sub">قراءة دقيقة لمؤشرات Lifetime وآخر 90 يوماً وآخر 28 يوماً وأداء الشورتس وتوصيات التحسين</p>
+          </div>
+        </div>
+
+        <div class="grid-4" style="margin-bottom: 18px;">
+          <div class="kpi zoomable">
+            <div class="kpi-label">الفيديوهات الطويلة (Lifetime)</div>
+            <div class="kpi-val">85.6K</div>
+            <div class="kpi-note">1.8M ظهور • 3.8% CTR • متوسط 1:01</div>
+          </div>
+          <div class="kpi warn zoomable">
+            <div class="kpi-label">أداء آخر 90 يوماً</div>
+            <div class="kpi-val">1.4K</div>
+            <div class="kpi-note">4.0K ظهور • 5.0% CTR • متوسط 8:32*</div>
+          </div>
+          <div class="kpi zoomable">
+            <div class="kpi-label">إجمالي آخر 28 يوماً</div>
+            <div class="kpi-val">4.7K</div>
+            <div class="kpi-note">44.7 ساعة • 523 مشترك (+14)</div>
+          </div>
+          <div class="kpi warn zoomable">
+            <div class="kpi-label">Shorts (Lifetime / 28d)</div>
+            <div class="kpi-val">38.4%</div>
+            <div class="kpi-note">Stayed to watch مقابل 61.6% Swiped away</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 16px;">
+          <div class="card card-coral zoomable">
+            <h3>🔍 تشخيص أزمة الاحتفاظ وفصل المسارات</h3>
+            <ul>
+              <li><strong>*تأثير المحاضرات الطويلة وUnlisted:</strong> شريحة كبيرة من مشاهدات آخر 90 يوماً ومتوسط 8:32 تعود لمحاضرات خارجية غير مدرجة (مثل المحاضرة الثانية أ/فاطمة عادل 186 مشاهدة ومتوسط 12:14، الأولى 150 / 13:48، الثالثة 148، الذكاء الاصطناعي 133، Canva AI 88) بظهور داخلي 0–5 مرات فقط. <strong>المطلوب:</strong> فصل مسار المنصة التعليمية عن هوية قناة الأطفال.</li>
+              <li><strong>المشاهدون الجدد مقابل العائدون:</strong> <span class="ltr-num">97.4%</span> مشاهدون جدد شهرياً (1.6K شورتس + 83 فيديو) مقابل <span class="ltr-num">2.3%</span> عرضيين و<span class="ltr-num">0.3%</span> منتظمين فقط (1 شورتس + 5 فيديو)، مع <span class="ltr-num">76.4%</span> من ساعات المشاهدة من غير المشتركين.</li>
+              <li><strong>تذبذب وتيرة النشر:</strong> 26 عنصراً إجمالياً مع انقطاعات لشهور ومسودة (Draft) لحرف الباء — يجب اعتماد جدول نشر منتظم وواقعي.</li>
+            </ul>
+          </div>
+
+          <div class="card card-teal zoomable">
+            <h3>📱 الأجهزة، الجمهور، والشورتس (آخر 28 يوماً)</h3>
+            <div class="bar-row">
+              <div class="bar-head"><span>الموبايل (Mobile phone)</span><span>73.4%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:73.4%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-head"><span>الكمبيوتر (Computer) / التابلت / TV</span><span>21.6% / 3.0% / 2.0%</span></div>
+              <div class="bar-track"><div class="bar-fill gold" style="width:26.6%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-head"><span>أولياء الأمور (25–34: 49.2% | 35–44: 34.0%)</span><span>83.2%</span></div>
+              <div class="bar-track"><div class="bar-fill navy" style="width:83.2%"></div></div>
+            </div>
+            <p style="margin-top:8px;">
+              <strong>الجغرافيا (آخر 28 يوماً):</strong> مصر <span class="ltr-num">69.4%</span>، العراق <span class="ltr-num">5.3%</span>، الجزائر <span class="ltr-num">3.3%</span>، سوريا <span class="ltr-num">3.0%</span>، السعودية <span class="ltr-num">2.4%</span> (إناث <span class="ltr-num">52.8%</span>، ذكور <span class="ltr-num">47.2%</span>).
+              <br><strong>مصادر 28 يوماً (4,749 مشاهدة):</strong> Shorts feed <span class="ltr-num">85.7%</span> (4,071) | البحث <span class="ltr-num">6.9%</span> (329 مشاهدة، 4.2% CTR، 0:35) | External <span class="ltr-num">2.1%</span> (98).
+            </p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card card-gold zoomable">
+            <h3>⚡ أداء Top Shorts ومنحنى الاحتفاظ</h3>
+            <p>
+              إجمالي جدول المقارنة: <strong>4,751 مشاهدة</strong> و<strong>44.6 ساعة</strong> و<strong>+14 مشتركاً</strong>:
+              <br>• «هل تستطيع قراءة كلمة غَضِبَ؟» (0:58): <strong>1,657</strong> مشاهدة (34.9%)، +5 مشتركين، 4.0% CTR.
+              <br>• «هل تستطيع قراءة كلمة أَيْنَ؟» (0:58): <strong>1,456</strong> مشاهدة (30.7%)، 2.2% CTR.
+              <br>• نسخة أخرى «غَضِبَ» (0:57): <strong>1,267</strong> مشاهدة (26.7%)، +2 مشتركين، 2.9% CTR.
+              <br><strong>منحنى التحدي (0:58):</strong> بقاء 37.4% ومتوسط 0:19 (34.4%) — يجب تقوية أول ثوانٍ وعدم تكرار نفس الكلمة.
+            </p>
+          </div>
+          <div class="card card-purple zoomable">
+            <h3>🎭 بناء الهوية والذاكرة البصرية (Character Sheets)</h3>
+            <p>
+              لمعالجة ضعف المشاهدين المنتظمين (0.3%)، يوصي التقرير بتثبيت شخصيات العرائس متعددة الزوايا والتعبيرات:
+              <br>• <strong>النسخة العصرية:</strong> للتأسيس اليومي والتحديات السريعة.
+              <br>• <strong>النسخة التراثية:</strong> للقصص والمغامرات والرحلات المعرفية مثل قراءة كتاب «العلوم» و«كنوز الفصحى» لتعزيز التذكر والعودة للقناة.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+    <!-- ==================== SLIDE 5: DESERT VIDEO AUDIT ==================== -->
+    <section class="slide" id="slide-5">
+      <div class="container">
+        <div class="slide-header">
+          <div>
+            <span class="slide-kicker">🐪 تحليل الفيديو الأول — Outlier #1</span>
+            <h2 class="slide-title">تحليل فيديو «مغامرة ممتعة في الصحراء للأطفال»</h2>
+            <p class="slide-sub">Learn Arabic Easily | Fun Desert Adventure for kids | كنوز الفصحى (المدة: 5:35)</p>
+          </div>
+        </div>
+
+        <div class="grid-4" style="margin-bottom: 18px;">
+          <div class="kpi zoomable">
+            <div class="kpi-label">إجمالي المشاهدات</div>
+            <div class="kpi-val">46,590</div>
+            <div class="kpi-note">ذروة يوم واحد: 3,353 (1 يوليو 2025)</div>
+          </div>
+          <div class="kpi zoomable">
+            <div class="kpi-label">مرات الظهور وCTR</div>
+            <div class="kpi-val">867.9K</div>
+            <div class="kpi-note">CTR 4.6% • 562.6 ساعة من الظهور (687.1 إجمالاً)</div>
+          </div>
+          <div class="kpi warn zoomable">
+            <div class="kpi-label">متوسط المشاهدة (Retention)</div>
+            <div class="kpi-val">0:53</div>
+            <div class="kpi-note">15.9% فقط • 75% يغادرون قبل 0:54</div>
+          </div>
+          <div class="kpi zoomable">
+            <div class="kpi-label">فرصة البحث الضائعة</div>
+            <div class="kpi-val">8.6% CTR</div>
+            <div class="kpi-note">متوسط 1:47 في البحث (أعلى من الإجمالي!)</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 16px;">
+          <div class="card card-coral zoomable">
+            <h3>📉 ما حدث في الرسم البياني ومنحنى الاحتفاظ</h3>
+            <ul>
+              <li><strong>طفرة وتوقف حاد:</strong> صعد الفيديو إلى 3,353 مشاهدة يوم 1 يوليو 2025 بفضل ترشيح خوارزميات يوتيوب المؤقت، ثم هبط إلى 22 مشاهدة فقط يوم 9 يوليو وتوقف لاحقاً (وصل إلى 0 في 30 أبريل 2026) بسبب ضعف السيو (0.2% فقط من البحث).</li>
+              <li><strong>نزيف الدقيقة الأولى:</strong> يتراجع المتبقون إلى 25% عند الثانية 0:53–0:54، ويصلون إلى 5.6% فقط عند النهاية (5:35). نسبة الإعجاب 69.8% (تراجع 26.9%).</li>
+              <li><strong>ملاحظة استمرار الجاذبية:</strong> في آخر 28 يوماً حقق 50 مشاهدة من 268 ظهور (<strong>9.3% CTR</strong>) ومتوسط 1:06 — الفكرة والغلاف ما زالا جاذبين للنقرات.</li>
+            </ul>
+          </div>
+
+          <div class="card card-teal zoomable">
+            <h3>🌍 المصادر، الجمهور، والأجهزة</h3>
+            <ul>
+              <li><strong>مصادر الزيارات:</strong> الفيديوهات المقترحة (Suggested) شكلت أكثر من 92% (43,087 مشاهدة)، مقابل 674 من Browse features و81 مشاهدة فقط من بحث يوتيوب (من 730 ظهور).</li>
+              <li><strong>عبارات البحث الفعلية:</strong> «الصحراء للاطفال» (3.7%)، «حيوانات الصحراء للاطفال» (3.7%)، «search for funny shows» (1.2%)، «الصحراء» (1.2%)، «تعلم حيوانات للاطفال» (1.2%).</li>
+              <li><strong>ثقة أولياء الأمور (واتساب):</strong> 0.3% مصادر خارجية (131 مشاهدة) تصدرها <strong>WhatsApp بنسبة 62.6%</strong> (82 مشاهدة في جروبات الماميز والآباء).</li>
+              <li><strong>الأجهزة والبلدان:</strong> <strong>TV 47.1%</strong>، Mobile 44.7%، Tablet 7.0%، Computer 1.2% | السعودية 17.0%، العراق 13.2%، مصر 12.8%، الجزائر 10.5%، سوريا 5.7% | أولياء الأمور (25–44 سنة) &gt;84% (ذكور 52.3%، إناث 47.7%).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout callout-gold zoomable">
+          <strong>خطة التطوير المستخلصة من هذا الفيديو:</strong> (1) بناء هوك خاطف في أول 15 ثانية وتغيير اللقطات كل 5–7 ثوانٍ مع تكثيف المؤثرات الصوتية الحية (SFX) بدون موسيقى لرفع الإكمال من 15.9% إلى 35%–40%، (2) نطق الكلمات البحثية داخل السكريبت + تفعيل الترجمة النصية الفصحى (CC)، (3) الالتزام بجودة 1080p وخطوط كبيرة واضحة لشاشات التلفزيون (47.1%).
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+    <!-- ==================== SLIDE 6: WELCOME TO MY HOME AUDIT ==================== -->
+    <section class="slide" id="slide-6">
+      <div class="container">
+        <div class="slide-header">
+          <div>
+            <span class="slide-kicker">🏡 تحليل الفيديو الثاني — Outlier #2</span>
+            <h2 class="slide-title">تحليل فيديو «مرحباً بكم في منزلي»</h2>
+            <p class="slide-sub">Learn Arabic Easily | Welcome to my home | كنوز الفصحى (المدة: 4:24 — نُشر 22 يونيو 2025)</p>
+          </div>
+        </div>
+
+        <div class="grid-4" style="margin-bottom: 18px;">
+          <div class="kpi zoomable">
+            <div class="kpi-label">المشاهدات والمشاهد الفريد</div>
+            <div class="kpi-val">26,844</div>
+            <div class="kpi-note">22.0K مشاهد فريد • 296.6 ساعة مشاهدة</div>
+          </div>
+          <div class="kpi zoomable">
+            <div class="kpi-label">مكسب المشتركين</div>
+            <div class="kpi-val">+114</div>
+            <div class="kpi-note">99.4% من ساعات المشاهدة لغير المشتركين</div>
+          </div>
+          <div class="kpi warn zoomable">
+            <div class="kpi-label">نسبة النقر (CTR)</div>
+            <div class="kpi-val">3.2%</div>
+            <div class="kpi-note">من 691.0K ظهور (أقل من فيديو الصحراء 4.6%)</div>
+          </div>
+          <div class="kpi warn zoomable">
+            <div class="kpi-label">متوسط المشاهدة والتفاعل</div>
+            <div class="kpi-val">0:39</div>
+            <div class="kpi-note">15.1% فقط • 57 إعجاب (71.2%) • 32 مشاركة</div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 16px;">
+          <div class="card card-coral zoomable">
+            <h3>📉 آلية الصعود والتوقف وضعف السيو</h3>
+            <ul>
+              <li><strong>90%+ في أول 15 يوماً:</strong> حقق 24,239 مشاهدة حتى 7 يوليو 2025 و685,397 ظهور في أول 18 يوماً، ثم استقر المنحنى أفقياً وتوقف النمو لـ 516 يوماً (0 مشاهدة آخر 48 ساعة).</li>
+              <li><strong>سيطرة Suggested (87.0%):</strong> جلب 23,361 مشاهدة (243.8 ساعة، 3.1% CTR، متوسط 0:37) وظهر بجانب محتوى تعليمي («تعليم النطق للأطفال»، «تعليم أسماء الأشكال») وأيضاً محتوى ترفيهي، مقابل 8.2% ميزات أخرى و2.7% تصفح.</li>
+              <li><strong>ضعف البحث (122 مشاهدة فقط):</strong> 1.5 ساعة بمتوسط 0:43 (16.4%) متناثرة بمعدل مشاهدة واحدة لكل عبارة («مرحبا بك في منزلي»، «welcome to my home»، «تعليم النطق للاطفال»). المصادر الخارجية 21 مشاهدة فقط.</li>
+            </ul>
+          </div>
+
+          <div class="card card-teal zoomable">
+            <h3>📺 هيمنة شاشات التلفزيون والجمهور العربي</h3>
+            <div class="bar-row">
+              <div class="bar-head"><span>التلفزيون (TV) — مشاهدة عائلية جماعية</span><span>59.7%</span></div>
+              <div class="bar-track"><div class="bar-fill navy" style="width:59.7%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-head"><span>الموبايل (Mobile phone)</span><span>32.3%</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:32.3%"></div></div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-head"><span>التابلت (Tablet) / الكمبيوتر</span><span>7.1% / 0.8%</span></div>
+              <div class="bar-track"><div class="bar-fill gold" style="width:7.9%"></div></div>
+            </div>
+            <p style="margin-top:8px;">
+              <strong>الأعمار والنوع:</strong> <span class="ltr-num">87.4%</span> أولياء أمور (25–34: <span class="ltr-num">62.3%</span> | 35–44: <span class="ltr-num">25.1%</span>)، إناث <span class="ltr-num">52.4%</span>، ذكور <span class="ltr-num">47.6%</span>.
+              <br><strong>الدول:</strong> السعودية <span class="ltr-num">15.3%</span>، العراق <span class="ltr-num">11.2%</span>، مصر <span class="ltr-num">8.7%</span>، الجزائر <span class="ltr-num">8.0%</span>، سوريا <span class="ltr-num">4.5%</span>.
+              <br><strong>الترجمة (CC):</strong> <span class="ltr-num">98.6%</span> بدون ترجمة مقابل <span class="ltr-num">1.4%</span> بالعربية فقط.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout callout-teal zoomable">
+          <strong>خطة الاستغلال والتنفيذ العملية في «كنوز الفصحى»:</strong> (1) استبدال التحيات والمقدمات المكررة بهوك مباشر ووعد بقيمة فورية في أول ثوانٍ مع أناشيد/مقاطع إيقاعية بدون موسيقى مدعومة بـ SFX، (2) صور مصغرة بنصوص قليلة وخطوط كبيرة واضحة لشاشات التلفزيون (59.7%)، (3) دمج كلمات بحثية قوية في العنوان وأول سطرين والسكريبت + CC + قوائم تشغيل (Playlists) وشاشات نهاية + دعوة اشتراك في لحظة تفاعل لتحويل غير المشتركين (99.4%).
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+    <!-- ==================== SLIDE 7: VISION & CONSTRAINTS ==================== -->
+    <section class="slide" id="slide-7">
+      <div class="container">
+        <div class="slide-header">
+          <div>
+            <span class="slide-kicker">🌟 الرؤية والقيود الأساسية</span>
+            <h2 class="slide-title">هوية قناة «كنوز الفصحى» وضوابط الإنتاج</h2>
+            <p class="slide-sub">القواعد الحاكمة لكل سكريبت وعروسة وصورة مصغرة — بدون استثناء</p>
+          </div>
+        </div>
+
+        <div class="callout callout-coral zoomable" style="margin-bottom: 18px;">
+          <strong>🔇 الالتزام التام بعدم وجود موسيقى:</strong> ممنوع استخدام الموسيقى في أي فيديو طويل أو شورتس. يتم تعويض غياب الموسيقى عبر <strong>المؤثرات الصوتية الطبيعية والحيّة (SFX)</strong> (صوت قطرة ماء، نقرة عدّاد، حركة ألعاب، صرير خزانة) مع إيقاع بصري سريع (تغيير اللقطات كل 5–7 ثوانٍ).
+        </div>
+
+        <div class="grid-3" style="margin-bottom: 18px;">
+          <div class="card card-gold zoomable">
+            <h3>📖 الفصحى المبسطة بالتشكيل</h3>
+            <p>كل الكلمات المستهدفة تظهر على الشاشة <strong>مشكّلة بوضوح وخط كبير</strong> (يناسب شاشات التلفزيون والموبايل) وتُنطق بفصحى مبسطة وسليمة لتدريب عين الطفل وأذنه معاً.</p>
+          </div>
+          <div class="card card-teal zoomable">
+            <h3>🎭 العرائس والقلب الطيب</h3>
+            <p>شخصيات عرائس ثابتة بصرياً بمشاعر حقيقية (حيرة، فضول، استعجال، نسيان). لا أشرار مخيفون ولا عنف ولا ترهيب؛ بل تصحيح لطيف ومشاركة ممتعة.</p>
+          </div>
+          <div class="card card-purple zoomable">
+            <h3>❤️ القيم التربوية والإيمانية</h3>
+            <p>ربط المواقف اليومية داخل البيت بقيم عملية: النظافة من الإيمان، حفظ النعمة وعدم إهدار الطعام، الحفاظ على الماء، الترتيب والأمانة، السكينة وذكر الله مساءً.</p>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card card-navy zoomable">
+            <h3>👨‍👩‍👧 مخاطبة الطفل وولي الأمر معاً</h3>
+            <ul>
+              <li><strong>مشاركة الطفل من خلف الشاشة:</strong> الطفل ليس متلقياً صامتاً؛ بل يجيب في تحدي 3–5 ثوانٍ، يصحح للعروسة، ويحل الفزورة في الختام.</li>
+              <li><strong>طمأنة ولي الأمر:</strong> أكثر من 83%–87% من الحسابات المشاهدة لأولياء أمور (25–44 سنة)؛ لذا يجمع العنوان والوصف بين الفضول والفائدة التعليمية الصريحة («علّم طفلك...»).</li>
+            </ul>
+          </div>
+          <div class="card card-coral zoomable">
+            <h3>🛡️ الفلتر الصارم — ضد الملل</h3>
+            <ul>
+              <li>ممنوع أسلوب المحاضرة أو التلقين المدرسي المباشر («اليوم سنتعلم درس...»).</li>
+              <li>ممنوع البدايات البطيئة والتحيات الطويلة المكررة (لتجنب نزيف الدقيقة الأولى).</li>
+              <li>تبدأ كل حلقة بحدث أو صوت أو سؤال مفاجئ في أول ثوانٍ يشد الطفل فوراً.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+    <!-- ==================== SLIDE 8: SERIES & 3 ANGLES ==================== -->
+    <section class="slide" id="slide-8">
+      <div class="container">
+        <div class="slide-header">
+          <div>
+            <span class="slide-kicker">🎪 السلسلة والتحدي التفاعلي + الزوايا الثلاث</span>
+            <h2 class="slide-title">سلسلة «مفاجآت بيتنا: تحدّي العرائس» والزوايا الثلاث</h2>
+            <p class="slide-sub">التركيز على قسم «3 زوايا مختلفة» لفكرة «لعبة الكلمات المشكّلة في 5 ثوانٍ» + نماذج العناوين والصور المصغرة</p>
+          </div>
+        </div>
+
+        <div class="callout callout-teal zoomable" style="margin-bottom: 14px;">
+          <strong>📺 هيكل السلسلة المستمرة:</strong> سلسلة <strong>«مفاجآت بيتنا»</strong> في قائمة تشغيل (Playlist) موحّدة تُربط بشاشات النهاية (End Screens) وتُشتق منها شورتس قصيرة لكل حلقة — تعتمد على <strong>التحدي السريع (3–5 ثوانٍ بدون موسيقى)</strong> بمشاركة الطفل من خلف الشاشة.
+        </div>
+
+        <div class="callout callout-gold zoomable" style="margin-bottom: 18px;">
+          <strong>📝 تنويه مهم لصاحبة القناة:</strong> هذه الأفكار والزوايا هي <strong>أفكار أولية قابلة للتطوير والتوسيع (وهناك أفكار أكثر بإذن الله)</strong>، ومحتاجين رأي حضرتك في الزاوية الأقرب لروح القناة قبل البدء في كتابة السكريبت.
+        </div>
+
+        <h3 style="color: var(--navy); margin-bottom: 10px; font-size: 1.05rem;">🔎 الزوايا الثلاث المختلفة — «لعبة الكلمات المشكّلة في 5 ثوانٍ» (اضغط على أي زاوية للتكبير)</h3>
+        <div class="grid-3" style="margin-bottom: 20px;">
+          <div class="card card-gold zoomable">
+            <h3>١. عدسة «السر الصغير» <span class="badge b-gold">The Tiny Secret</span></h3>
+            <p><strong>العنوان المقترح:</strong> حركة صغيرة غيّرت نطق الكلمة تماماً، علّم طفلك السكون والمدود في 5 ثوانٍ</p>
+            <p style="margin-top:6px;"><strong>فكرة الزاوية:</strong> العروسة تكشف أن علامة صغيرة أو حرف مد غيّر نطق الكلمة ومعناها بالكامل، وتفتح عدّاد 3–5 ثوانٍ ليصطاد الطفل «التفصيل الصغير» قبل أن يقع في خطأ النطق.</p>
+            <p style="margin-top:6px;"><strong>الهوك البصري والسمعي:</strong> بطاقة كلمة مشكّلة كبيرة + زووم سريع يبرز السكون أو المد + صوت نقرة خفيفة للعدّاد ونطق سريع بدون موسيقى.</p>
+            <p style="margin-top:6px;"><strong>جملة البداية:</strong> «انتبهوا! حركة واحدة صغيرة قلبت نطق الكلمة كلها.. هل تلقطونها في 5 ثوانٍ؟»</p>
+            <p style="margin-top:6px;color:var(--teal);font-weight:600;"><strong>سبب الاستمرار:</strong> يريد الطفل إثبات قوة ملاحظته، ويرى ولي الأمر تحسّن تركيزه على السكون والمدود.</p>
+          </div>
+
+          <div class="card card-teal zoomable">
+            <h3>٢. عدسة «البطل المحتار» <span class="badge b-teal">The Curious Twist</span></h3>
+            <p><strong>العنوان المقترح:</strong> عروسة تخلط بين السكون والمدود وتتعثر في القراءة، علّم طفلك القراءة بالتشكيل</p>
+            <p style="margin-top:6px;"><strong>فكرة الزاوية:</strong> عروسة لطيفة وحماسية تتعثر وتخلط بين الحركات والسكون والمدود فتقرأ الكلمة بشكل مضحك غير مقصود، ثم تطلب من الطفل مساعدتها وتصحيح نطقها بلطف.</p>
+            <p style="margin-top:6px;"><strong>الهوك البصري والسمعي:</strong> العروسة بتعبير حيرة وخفة ظل أمام بطاقة كلمة مشكّلة مع عدّاد زمني بسيط + صوت تعثر طريف وعدّاد واضح بدون موسيقى.</p>
+            <p style="margin-top:6px;"><strong>جملة البداية:</strong> «يا نهار أبيض! أنا نطقت الكلمة غلط وعلقت في التشكيل.. مين يصحّح لي قبل ما يخلص الوقت؟»</p>
+            <p style="margin-top:6px;color:var(--teal);font-weight:600;"><strong>سبب الاستمرار:</strong> يتعلق الطفل بالعروسة ويحب تصحيح أخطائها بلا خوف من الغلط، ويرى ولي الأمر نموذجاً للصبر.</p>
+          </div>
+
+          <div class="card card-purple zoomable">
+            <h3>٣. عدسة «عكس اللعبة» <span class="badge b-purple">The Flip Game</span></h3>
+            <p><strong>العنوان المقترح:</strong> ماذا لو أصبح طفلك هو «المُصحّح» في تحدي التشكيل؟ علّم طفلك القراءة</p>
+            <p style="margin-top:6px;"><strong>فكرة الزاوية:</strong> قلب اللعبة تماماً؛ يصبح الطفل هو «المُصحّح والمُقيّم» الذي يقرأ الكلمة خلال 3–5 ثوانٍ ويقرر هل نطقها صحيح أم يحتاج لتعديل، ثم تتحقق العروسة معه.</p>
+            <p style="margin-top:6px;"><strong>الهوك البصري والسمعي:</strong> العروسة تشير مباشرة نحو الشاشة وتمد بطاقة كلمة مشكّلة مع مؤقت بصري هادئ + صوت «تِك.. تِك» للعدّاد بدون موسيقى.</p>
+            <p style="margin-top:6px;"><strong>جملة البداية:</strong> «النهاردة الدور عليك إنت تكون المُصحّح! اقرأ الكلمة في 5 ثوانٍ وقل لي رأيك!»</p>
+            <p style="margin-top:6px;color:var(--teal);font-weight:600;"><strong>سبب الاستمرار:</strong> يتحمس الطفل لدور القيادة ويشارك بصوته من خلف الشاشة، ويلمس ولي الأمر سرعة قراءته.</p>
+          </div>
+        </div>
+
+        <h3 style="color: var(--navy); margin-bottom: 10px; font-size: 1.05rem;">🖼️ نماذج عناوين وصور مصغرة واضحة (نموذج حلقة «لغز الكائن السريع»)</h3>
+        <div class="grid-3">
+          <div class="thumb-card zoomable">
+            <span class="badge b-gold">١. الفضول والموقف</span>
+            <div class="thumb-word">مَنْ هُنَا؟</div>
+            <p style="font-size:.82rem;color:#DCE6F0;"><strong>العنوان:</strong> لغز الكائن السريع داخل بيتك، أين اختبأ؟ علّم طفلك النظافة والانتباه</p>
+            <p style="font-size:.78rem;color:#B8D4CC;margin-top:6px;">العروسة الأم بتعبير خضّة وعينين متسعتين + صرصور كرتوني بسيط يختبئ خلف إناء.</p>
+          </div>
+          <div class="thumb-card zoomable">
+            <span class="badge b-teal">٢. التحدي والنتيجة</span>
+            <div class="thumb-word">تَحَدَّنِي!</div>
+            <p style="font-size:.82rem;color:#DCE6F0;"><strong>العنوان:</strong> كيف نحمي المطبخ من الكائن السريع؟ تعلّم معنا 4 كلمات بالتشكيل</p>
+            <p style="font-size:.78rem;color:#B8D4CC;margin-top:6px;">العروسة تشير بدهشة إلى بطاقة كلمة «نَظَافَة» بتشكيل واضح + الصرصور يهرب بعيداً.</p>
+          </div>
+          <div class="thumb-card zoomable">
+            <span class="badge b-coral">٣. التحذير والمفاجأة</span>
+            <div class="thumb-word">انْتَبِهْ!</div>
+            <p style="font-size:.82rem;color:#DCE6F0;"><strong>العنوان:</strong> ماذا وجدت العرائس خلف الأطعمة في المطبخ؟ علّم طفلك الحذر والنظام</p>
+            <p style="font-size:.78rem;color:#B8D4CC;margin-top:6px;">وجه العروسة في استغراب وخفة ظل + صرصور كرتوني صغير يطل من زاوية الإطار.</p>
+          </div>
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+    <!-- ==================== SLIDE 9: VIDEO CONTENT (6 IDEAS) ==================== -->
+    <section class="slide" id="slide-9">
+      <div class="container">
+        <div class="slide-header">
+          <div>
+            <span class="slide-kicker">📽️ تنظيم الفيديوهات — الأفكار الأولية</span>
+            <h2 class="slide-title">الأفكار الأولية الستّ المعتمدة (بتفاصيلها الكاملة)</h2>
+            <p class="slide-sub">جميعها في قائمة تشغيل واحدة «مفاجآت بيتنا» — (تم إلغاء فكرة أنشودة الحروف والنظافة بناءً على التوجيه)</p>
+          </div>
+        </div>
+
+        <div class="callout callout-gold zoomable" style="margin-bottom: 16px;">
+          <strong>✨ ملاحظة للعميل / صاحبة القناة:</strong> هذه القائمة تمثّل <strong>أفكاراً أولية</strong> لبداية السلسلة، وبإذن الله لدينا أفكار أكثر قادمة — و<strong>نحتاج رأي حضرتك</strong> في الأنسب منها للبداية وتحديد أولوية التنفيذ.
+        </div>
+
+        <div class="idea-tabs" id="ideaTabs">
+          <button class="idea-tab active" onclick="showIdea(1, this)">١. لغز الكائن السريع 🪳</button>
+          <button class="idea-tab" onclick="showIdea(2, this)">٢. صف النمل الصغير 🐜</button>
+          <button class="idea-tab" onclick="showIdea(3, this)">٣. صوت تنقيط الماء 💧</button>
+          <button class="idea-tab" onclick="showIdea(4, this)">٤. قلم التلوين المختفي 🖍️</button>
+          <button class="idea-tab" onclick="showIdea(5, this)">٥. حركة قرب النافذة 🌇</button>
+          <button class="idea-tab" onclick="showIdea(6, this)">٦. لعبة الكلمات في 5 ثوانٍ ⏱️</button>
+        </div>
+
+        <!-- IDEA 1 -->
+        <div class="idea-panel active" id="idea-1">
+          <div class="card card-coral zoomable" style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+              <h3>١. لغز الكائن السريع: مغامرة النظافة وتحدي الكلمات (بعرائس كنوز الفصحى)</h3>
+              <div><span class="badge b-teal">Playlist</span> <span class="badge b-blue">أفكار من المنافسين والفيديو المنتشر</span> <span class="badge b-navy">Idea</span></div>
+            </div>
+            <p><strong>بصمة كنوز الفصحى:</strong> بداية مشوّقة بخضّة خفيفة في المطبخ تشد الطفل من أول ثانية، تتحول لمغامرة بالعرائس تجمع بين المعلومة العلمية عن الحشرات + قيمة النظافة من الإيمان + تحدي الكلمات بالتشكيل + فزورة ختامية.</p>
+            <div style="margin-top:8px;">
+              <span class="tashkeel-word">صُرْصُور</span><span class="tashkeel-word">مَطْبَخ</span><span class="tashkeel-word">ظَلَام</span><span class="tashkeel-word">نَظَافَة</span><span class="tashkeel-word">جَرَاثِيم</span><span class="tashkeel-word">تَعَاوُن</span><span class="tashkeel-word">طَعَام</span>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>المشهد</th><th>A-roll (الحوار والأداء)</th><th>B-roll (الصورة والمؤثرات بدون موسيقى)</th></tr></thead>
+              <tbody>
+                <tr><td><strong>المقدمة</strong></td><td>العروسة الأم تفتح خزانة المطبخ وتتفاجأ بحركة سريعة فتصرخ بخضة طريفة وتنادي الأب والأبناء: «أسرعوا! هناك كائن سريع جداً في المطبخ!»</td><td>لقطة قريبة لفتح الخزانة + صوت صرير وخطوات سريعة (SFX بدون موسيقى) + ظل كائن يمر بسرعة + رد فعل العروسة.</td></tr>
+                <tr><td><strong>المواجهة والسؤال</strong></td><td>العرائس تتساءل: «ما هذا الكائن؟ ولماذا اختبأ هنا؟» وتوضح: «إنه الصرصور، يحب الأماكن المظلمة والدافئة ويبحث عن فتات الطعام».</td><td>لقطة للعرائس في المطبخ + حركة هروب سريعة من الضوء + ظهور الكلمات بالتشكيل: صُرْصُور — مَطْبَخ — ظَلَام.</td></tr>
+                <tr><td><strong>الدرس والنظافة</strong></td><td>العروسة الأب تربط الموقف بالسلوك: «الصرصور قد ينقل الجراثيم، وديننا يعلمنا أن النَّظَافَةَ مِنَ الإِيمَان. هيا ننظف المطبخ ونحفظ الطعام».</td><td>عرائس تغلق علب الطعام وتنظف المكان + إبراز الكلمات بالتشكيل: نَظَافَة — جَرَاثِيم — تَعَاوُن — طَعَام.</td></tr>
+                <tr><td><strong>الفزورة والختام</strong></td><td>العروسة تسأل الطفل: «كم رجلاً للصرصور؟ وما الشيء الذي يهرب منه فوراً؟» ثم تذكر الإجابة وتختم بوداع لطيف.</td><td>شاشة سؤال بصري + إظهار الإجابة مصورة (6 أرجل / الضوء) + End Screen للحلقة التالية.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- IDEA 2 -->
+        <div class="idea-panel" id="idea-2">
+          <div class="card card-gold zoomable" style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+              <h3>٢. صف النمل الصغير وفتات الطعام على المائدة</h3>
+              <div><span class="badge b-teal">Playlist</span> <span class="badge b-purple">أفكار من الكلمات المفتاحية</span> <span class="badge b-navy">Idea</span></div>
+            </div>
+            <p><strong>تفاصيل الفكرة:</strong> مشهد يومي لصف نمل منتظم يسير خلف فتات خبز أو سكر. تشرح العرائس للطفل كيف يعمل النمل بنظام وتعاون، وكيف يجذب الطعام المكشوف الحشرات، مع ربطه بقيمة <strong>عدم إهدار النعمة</strong> و<strong>العمل الجماعي</strong>.</p>
+            <div style="margin-top:8px;">
+              <span class="tashkeel-word">نَمْلَة</span><span class="tashkeel-word">تَعَاوُن</span><span class="tashkeel-word">نِظَام</span><span class="tashkeel-word">طَعَام</span>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>المشهد</th><th>A-roll &amp; B-roll (ملخص السكريبت)</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>١. المقدمة</strong></td><td>عروسة تنظر للمائدة وتتفاجأ: «انظروا! صف صغير يتحرك بهدوء نحو فتات الخبز!» (لقطة قريبة + خطوات خفيفة بدون موسيقى).</td></tr>
+                  <tr><td><strong>٢. المواجهة</strong></td><td>«لماذا تسير النملة في صف واحد؟ وما الذي جذبها إلى هنا؟» + ظهور: <strong>نَمْلَة — طَعَام</strong>.</td></tr>
+                  <tr><td><strong>٣. الدرس</strong></td><td>العرائس تجمع الفتات وتنظف المائدة معاً وتؤكد على التعاون وحفظ النعمة + ظهور: <strong>تَعَاوُن — نِظَام</strong>.</td></tr>
+                  <tr><td><strong>٤. الفزورة</strong></td><td>«ماذا يفعل النمل عندما يجد طعاماً؟ وكيف نمنع قدومه؟» + بطاقة الإجابة.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card card-teal zoomable">
+              <h3>🏷️ عناوين، صور مصغرة، واختبار A/B</h3>
+              <ul>
+                <li><strong>عنوان 1:</strong> صف النمل الصغير يسير في صمت، ماذا وجد على المائدة؟ علّم طفلك التعاون والنظام <span class="badge b-gold">صورة: تَعَاوُنٌ!</span></li>
+                <li><strong>عنوان 2:</strong> سر صف النمل في بيتنا، تعلّم 4 كلمات بالتشكيل والنظام <span class="badge b-gold">صورة: هَيَّا نَرَى!</span></li>
+                <li><strong>عنوان 3:</strong> لماذا جاء النمل إلى المائدة؟ علّم طفلك حفظ النعمة والنظافة <span class="badge b-gold">صورة: نِظَامٌ!</span></li>
+                <li><strong>اختبار A/B:</strong> نسخة A (الفضول ثم التعلّم) مقابل نسخة B: «سر نظام النمل وحفظ الطعام، تعلّم الكلمات والنظافة».</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- IDEA 3 -->
+        <div class="idea-panel" id="idea-3">
+          <div class="card card-teal zoomable" style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+              <h3>٣. صوت تنقيط الماء المستمر في الحمام</h3>
+              <div><span class="badge b-teal">Playlist</span> <span class="badge b-purple">أفكار من الكلمات المفتاحية</span> <span class="badge b-navy">Idea</span></div>
+            </div>
+            <p><strong>تفاصيل الفكرة:</strong> تبدأ بصوت «تِك.. تِك..» واضح لقطرة ماء تنزل باستمرار من الصنبور، فتبحث العرائس عن مصدره وتكتشف أن الصنبور لم يُغلق جيداً، وتشرح قيمة <strong>الماء كنعمة</strong> وعدم الإسراف.</p>
+            <div style="margin-top:8px;">
+              <span class="tashkeel-word">مَاء</span><span class="tashkeel-word">قَطْرَة</span><span class="tashkeel-word">حِفَاظ</span><span class="tashkeel-word">نِعْمَة</span>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>المشهد</th><th>A-roll &amp; B-roll (ملخص السكريبت)</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>١. المقدمة</strong></td><td>«اسمعوا! صوت قطرة تسقط مرة بعد مرة داخل الحمام!» (لقطة للصنبور + صوت قطرة ماء واضح بدون موسيقى).</td></tr>
+                  <tr><td><strong>٢. المواجهة</strong></td><td>«من أين يأتي هذا الصوت؟ ولماذا يضيع الماء هكذا؟» + ظهور: <strong>مَاء — قَطْرَة</strong>.</td></tr>
+                  <tr><td><strong>٣. الدرس</strong></td><td>إغلاق الصنبور بإحكام والتأكيد على أن الماء نعمة كبيرة لا نسرف فيها + ظهور: <strong>حِفَاظ — نِعْمَة</strong>.</td></tr>
+                  <tr><td><strong>٤. الفزورة</strong></td><td>«ماذا نفعل عندما نرى ماءً يتسرب؟» + إظهار الإجابة ووداع العرائس.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card card-gold zoomable">
+              <h3>🏷️ عناوين وصور مصغرة مقترحة</h3>
+              <ul>
+                <li><strong>عنوان 1:</strong> صوت قطرة تسقط دون توقف في الحمام، من يتركها هكذا؟ علّم طفلك الحفاظ على النعمة <span class="badge b-teal">صورة: نِعْمَةٌ!</span></li>
+                <li><strong>عنوان 2:</strong> كيف نوقف تسرب الماء؟ تعلّم معنا 4 كلمات بالتشكيل والحفاظ على النعمة <span class="badge b-teal">صورة: اِحْفَظْهَا!</span></li>
+                <li><strong>عنوان 3:</strong> ماذا فعلت قطرة الماء الصغيرة في الحمام؟ علّم طفلك عدم الإسراف <span class="badge b-teal">صورة: انْتَبِهْ!</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- IDEA 4 -->
+        <div class="idea-panel" id="idea-4">
+          <div class="card card-purple zoomable" style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+              <h3>٤. قلم التلوين أو اللعبة المختفية وسط كركبة الغرفة</h3>
+              <div><span class="badge b-teal">Playlist</span> <span class="badge b-purple">أفكار من الكلمات المفتاحية</span> <span class="badge b-navy">Idea</span></div>
+            </div>
+            <p><strong>تفاصيل الفكرة:</strong> عروسة تريد التلوين أو اللعب فتكتشف أن قلم التلوين اختفى وسط أغراض مبعثرة. تتعاون العرائس في البحث وتوضح أن الفوضى تضيع الوقت، فيعيدون ترتيب كل شيء لمكانه.</p>
+            <div style="margin-top:8px;">
+              <span class="tashkeel-word">تَرْتِيب</span><span class="tashkeel-word">غُرْفَة</span><span class="tashkeel-word">بَحْث</span><span class="tashkeel-word">نِظَام</span>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>المشهد</th><th>A-roll &amp; B-roll (ملخص السكريبت)</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>١. المقدمة</strong></td><td>«أين ذهب قلم التلوين؟ كنت أضعه هنا قبل قليل!» (يد العروسة تقلّب الأغراض + صوت حركة ألعاب بدون موسيقى).</td></tr>
+                  <tr><td><strong>٢. المواجهة</strong></td><td>«لماذا يختفي القلم بسهولة؟» وملاحظة حاجة الغرفة للترتيب + ظهور: <strong>غُرْفَة — بَحْث</strong>.</td></tr>
+                  <tr><td><strong>٣. الدرس</strong></td><td>ترتيب الألعاب ووضع كل غرض في مكانه المخصص + ظهور: <strong>تَرْتِيب — نِظَام</strong>.</td></tr>
+                  <tr><td><strong>٤. الفزورة</strong></td><td>«أين نضع ألعابنا بعد الانتهاء من اللعب؟» + إظهار الإجابة ووداع الشخصيات.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card card-gold zoomable">
+              <h3>🏷️ عناوين وصور مصغرة مقترحة</h3>
+              <ul>
+                <li><strong>عنوان 1:</strong> أين اختفى قلم التلوين داخل الغرفة؟ علّم طفلك الترتيب والبحث الذكي <span class="badge b-purple">صورة: أَيْنَ هُوَ؟</span></li>
+                <li><strong>عنوان 2:</strong> كيف نجد الأغراض بسرعة؟ تعلّم معنا 4 كلمات بالتشكيل والترتيب <span class="badge b-purple">صورة: هَيَّا نُرَتِّبْ!</span></li>
+                <li><strong>عنوان 3:</strong> ماذا خبأت فوضى الغرفة عن العرائس؟ علّم طفلك النظام وتحمّل المسؤولية <span class="badge b-purple">صورة: اِبْحَثْ!</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- IDEA 5 -->
+        <div class="idea-panel" id="idea-5">
+          <div class="card card-navy zoomable" style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+              <h3>٥. حركة خفيفة أو ظل لطيف قرب النافذة وقت الغروب</h3>
+              <div><span class="badge b-teal">Playlist</span> <span class="badge b-purple">أفكار من الكلمات المفتاحية</span> <span class="badge b-navy">Idea</span></div>
+            </div>
+            <p><strong>تفاصيل الفكرة:</strong> تلاحظ العرائس وقت الغروب حركة خفيفة أو ظل كائن صغير (مثل فراشة أو طائر) قرب النافذة، فتوضح أن الأصوات والظلال المسائية لا تستدعي الخوف، بل نطمئن ونذكر الله ونهدأ.</p>
+            <div style="margin-top:8px;">
+              <span class="tashkeel-word">لَيْل</span><span class="tashkeel-word">نَافِذَة</span><span class="tashkeel-word">هُدُوء</span><span class="tashkeel-word">أَمَان</span>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>المشهد</th><th>A-roll &amp; B-roll (ملخص السكريبت)</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>١. المقدمة</strong></td><td>«انظروا! هناك حركة خفيفة عند النافذة وقت الغروب!» (لقطة للنافذة وقت الغروب + ظل لطيف + صوت هادئ بدون موسيقى).</td></tr>
+                  <tr><td><strong>٢. المواجهة</strong></td><td>«ما هذا الذي يتحرك قرب الشباك؟» وتوضيح أنه كائن بسيط لا يدعو للخوف + ظهور: <strong>لَيْل — نَافِذَة</strong>.</td></tr>
+                  <tr><td><strong>٣. الدرس</strong></td><td>التأكيد على الهدوء والسكينة والاطمئنان وذكر الله عند المساء + ظهور: <strong>هُدُوء — أَمَان</strong>.</td></tr>
+                  <tr><td><strong>٤. الفزورة</strong></td><td>«ماذا نفعل لنشعر بالهدوء والأمان عند المساء؟» + إجابة ووداع مطمئن.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card card-gold zoomable">
+              <h3>🏷️ عناوين وصور مصغرة مقترحة</h3>
+              <ul>
+                <li><strong>عنوان 1:</strong> حركة غريبة قرب النافذة وقت الغروب، ماذا يقترب من البيت؟ علّم طفلك الهدوء والطمأنينة <span class="badge b-navy">صورة: أَمَانٌ!</span></li>
+                <li><strong>عنوان 2:</strong> كيف نبقى هادئين وقت الغروب؟ تعلّم معنا 4 كلمات بالتشكيل والسكينة <span class="badge b-navy">صورة: هُدُوءٌ!</span></li>
+                <li><strong>عنوان 3:</strong> ماذا ظهر قرب النافذة عند المساء؟ علّم طفلك الشجاعة والاطمئنان <span class="badge b-navy">صورة: مَنْ هُنَا؟</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- IDEA 6 -->
+        <div class="idea-panel" id="idea-6">
+          <div class="card card-gold zoomable" style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+              <h3>٦. لعبة الكلمات المشكّلة في 5 ثوانٍ (3 زوايا مختلفة — محتاج رأيك فيها)</h3>
+              <div><span class="badge b-teal">Playlist</span> <span class="badge b-purple">أفكار من الكلمات المفتاحية</span> <span class="badge b-gold">تحدي 3–5 ثوانٍ</span></div>
+            </div>
+            <p><strong>القسم الخاص بتفكيك الفكرة:</strong> هذه الفكرة مُفكّكة إلى 3 زوايا مختلفة لاختيار الأنسب منها مع صاحبة القناة قبل كتابة السكريبت التفصيلي (راجع الشريحة ٨ للتفصيل الكامل لكل زاوية مع الهوك البصري والسمعي وسبب الاستمرار).</p>
+          </div>
+          <div class="grid-3">
+            <div class="card card-gold zoomable">
+              <h3>١. عدسة السر الصغير</h3>
+              <p><strong>العنوان:</strong> حركة صغيرة غيّرت نطق الكلمة تماماً، علّم طفلك السكون والمدود في 5 ثوانٍ</p>
+              <p style="margin-top:6px;"><strong>الهوك:</strong> زووم على علامة السكون/المد + عدّاد 5 ثوانٍ بدون موسيقى.</p>
+            </div>
+            <div class="card card-teal zoomable">
+              <h3>٢. عدسة البطل المحتار</h3>
+              <p><strong>العنوان:</strong> عروسة تخلط بين السكون والمدود وتتعثر في القراءة، علّم طفلك القراءة بالتشكيل</p>
+              <p style="margin-top:6px;"><strong>الهوك:</strong> العروسة تتعثر بلطف والطفل يصحّح لها قبل انتهاء العدّاد.</p>
+            </div>
+            <div class="card card-purple zoomable">
+              <h3>٣. عدسة عكس اللعبة</h3>
+              <p><strong>العنوان:</strong> ماذا لو أصبح طفلك هو «المُصحّح» في تحدي التشكيل؟ علّم طفلك القراءة</p>
+              <p style="margin-top:6px;"><strong>الهوك:</strong> العروسة تمد البطاقة للشاشة والطفل يقود التقييم في 3–5 ثوانٍ.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout callout-teal zoomable" style="margin-top: 14px;">
+          <strong>🌿 فكرة احتياطية إضافية جاهزة في المرجع:</strong> <strong>زائر الحديقة: الضيف الأخضر</strong> <em>(القيمة: الرفق بالكائنات والحفاظ على الطبيعة | الكلمات: حَدِيقَة، زَهْرَة، رِفْق، طَبِيعَة)</em>.
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+    <!-- ==================== SLIDE 10: RESEARCH & ROADMAP ==================== -->
+    <section class="slide" id="slide-10">
+      <div class="container">
+        <div class="slide-header">
+          <div>
+            <span class="slide-kicker">🔬 خلاصة البحث + 🗺️ خطة التنفيذ القادمة</span>
+            <h2 class="slide-title">خلاصة YouTube Studio Research وخطة العمل القادمة</h2>
+            <p class="slide-sub">التمييز بين صيغ المحتوى وخطوات التنفيذ المتسلسلة (الزاوية → Script → Description/SEO → المونتاج)</p>
+          </div>
+        </div>
+
+        <div class="table-wrap" style="margin-bottom: 18px;">
+          <table>
+            <thead>
+              <tr>
+                <th>صيغة المحتوى</th>
+                <th>خصائصها ودورها في القناة</th>
+                <th>أمثلة واقعية من ملفاتنا</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="badge b-gold">صيغ موسمية (Seasonal)</span></td>
+                <td>ترتبط بمواسم محددة وتُجهَّز قبل الموسم لالتقاط موجات البحث المرتفعة مؤقتاً.</td>
+                <td><strong>قصص رمضان</strong> (3,985 بحث، Low)، فوازير رمضان، وأوقات العبادات الموسمية.</td>
+              </tr>
+              <tr>
+                <td><span class="badge b-teal">تحديات مستمرة (Evergreen)</span></td>
+                <td>تعمل طوال السنة وتبني نمواً تراكمياً مستقراً وتمنع توقف المشاهدات بعد الموجة الأولى.</td>
+                <td>سلسلة <strong>«مفاجآت بيتنا»</strong>، <strong>قصص اطفال</strong> (78,358)، <strong>أذكار الصباح والمساء</strong>.</td>
+              </tr>
+              <tr>
+                <td><span class="badge b-purple">صيغ التحدي التفاعلي</span></td>
+                <td>عدّاد 3–5 ثوانٍ أو ألغاز سريعة بدون موسيقى؛ أثبتت أعلى جذب في الشورتس (غَضِبَ 1,657، أَيْنَ 1,456).</td>
+                <td><strong>لعبة الكلمات المشكّلة في 5 ثوانٍ</strong>، <strong>الغاز للاذكياء</strong> (52,829)، <strong>سؤال وجواب</strong> (10,407).</td>
+              </tr>
+              <tr>
+                <td><span class="badge b-blue">الأنشطة العملية</span></td>
+                <td>مشاركة الطفل من خلف الشاشة فعلياً: البحث، التصحيح، الترتيب، وحل الفزورة في النهاية.</td>
+                <td>ترتيب الغرفة، إغلاق الصنبور، تنظيف المائدة، ودور «المُصحّح» في الكلمات.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout-navy zoomable" style="margin-bottom: 18px;">
+          <strong>🔎 مؤشرات بحث YouTube Studio المرصودة في التقرير (آخر 28 يوماً):</strong> ظهرت إشارات بحث أولية واعدة لعبارات <strong>«تحدي القراءة العربي»</strong>، و<strong>«تعليم اللغة العربية للأطفال»</strong> (احتفاظ 0:47)، و<strong>«تعليم الصلاة للأطفال»</strong>، وخيط <strong>«دين كيدز»</strong> (سجّل 3 مشاهدات بمتوسط 1:56 احتفاظ) — وهي عبارات تُغذّي خطة المحتوى بعد تنقية الكلمات العشوائية.
+        </div>
+
+        <h3 style="color: var(--navy); margin-bottom: 12px; font-size: 1.05rem;">🚀 خطة التنفيذ القادمة (الخطوات الأربع المعتمدة)</h3>
+        <div class="grid-2">
+          <div class="step-box zoomable">
+            <div class="step-circle">١</div>
+            <div>
+              <h4 style="color:var(--navy);margin-bottom:4px;">اختيار الزاوية مع صاحبة القناة</h4>
+              <p style="font-size:.88rem;color:var(--muted);">مراجعة الزوايا الثلاث لـ «لعبة الكلمات المشكّلة في 5 ثوانٍ» وتحديد أولوية الحلقات الأولية الـ 6، مع تثبيت شخصيات العرائس (Character Sheets) وفصل مسار المحاضرات.</p>
+            </div>
+          </div>
+          <div class="step-box zoomable">
+            <div class="step-circle">٢</div>
+            <div>
+              <h4 style="color:var(--navy);margin-bottom:4px;">كتابة الـ Script أولاً (A-roll / B-roll)</h4>
+              <p style="font-size:.88rem;color:var(--muted);">هوك مباشر في أول 15 ثانية بدون تحيات مكررة، تغيير اللقطات كل 5–7 ثوانٍ، نطق الكلمات المفتاحية داخل السكريبت (السيو الصوتي)، ودعوة اشتراك في لحظة تفاعل.</p>
+            </div>
+          </div>
+          <div class="step-box zoomable">
+            <div class="step-circle">٣</div>
+            <div>
+              <h4 style="color:var(--navy);margin-bottom:4px;">كتابة الـ Description وتجهيز الـ SEO</h4>
+              <p style="font-size:.88rem;color:var(--muted);">تضمين الكلمات المختارة من قاعدة الـ 60 كلمة في العنوان وأول سطرين من الوصف، تفعيل الترجمة النصية (CC) عربية وإنجليزية، وربط الحلقات في Playlist وشاشات النهاية.</p>
+            </div>
+          </div>
+          <div class="step-box zoomable">
+            <div class="step-circle">٤</div>
+            <div>
+              <h4 style="color:var(--navy);margin-bottom:4px;">تجهيز التنفيذ والمونتاج والنشر المنتظم</h4>
+              <p style="font-size:.88rem;color:var(--muted);">مؤثرات صوتية حية (SFX) بدون موسيقى تماماً، كلمات مشكّلة بخطوط كبيرة واضحة للتلفزيون والموبايل بجودة 1080p، واشتقاق Shorts قصيرة وجدول نشر منتظم.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-credit-wrap"><div class="author-box"><span class="dot"></span><span>إنشاء وإعداد: <strong>محمود الحلواني</strong></span></div></div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER NAV -->
+  <footer class="footer-nav">
+    <button class="nav-btn" id="prevBtn" onclick="prevSlide()">→ السابق</button>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar" style="width: 10%;"></div>
+    </div>
+    <div class="footer-credit">إنشاء وإعداد: محمود الحلواني</div>
+    <button class="nav-btn" id="nextBtn" onclick="nextSlide()">التالي ←</button>
+  </footer>
+</div>
+
+<!-- TOC MODAL -->
+<div class="toc-modal" id="tocModal" onclick="if(event.target===this) closeTOC()">
+  <div class="toc-box">
+    <div class="toc-head">
+      <h3 style="font-family:'Amiri',serif;font-size:1.35rem;color:var(--navy);">📋 الفهرس السريع للشرائح (10 شرائح)</h3>
+      <button class="toc-close" onclick="closeTOC()">✕</button>
+    </div>
+    <div class="toc-grid" id="tocGrid"></div>
+  </div>
+</div>
+
+<!-- ZOOM MODAL (FOR MOBILE TAP & DESKTOP CLICK INSPECTION) -->
+<div class="zoom-modal" id="zoomModal" onclick="if(event.target===this) closeZoom()">
+  <div class="zoom-box">
+    <button class="zoom-close" onclick="closeZoom()">✕ إغلاق</button>
+    <div class="zoom-content" id="zoomContent"></div>
+  </div>
+</div>
+
+<script>
+  const slidesMeta = [
+    { id: 1, short: '١. الغلاف', title: '١. الغلاف — هوية «كنوز الفصحى» وهيكلة العرض' },
+    { id: 2, short: '٢. الكلمات (60)', title: '٢. قاعدة الكلمات المفتاحية — VidIQ (60 كلمة)' },
+    { id: 3, short: '٣. المنافسين', title: '٣. تحليل المنافسين واستلهام البصمة' },
+    { id: 4, short: '٤. تدقيق القناة', title: '٤. التحليل الشامل للقناة (Channel Audit)' },
+    { id: 5, short: '٥. فيديو الصحراء', title: '٥. تحليل فيديو «مغامرة ممتعة في الصحراء»' },
+    { id: 6, short: '٦. فيديو منزلي', title: '٦. تحليل فيديو «مرحباً بكم في منزلي»' },
+    { id: 7, short: '٧. الرؤية والقيود', title: '٧. الرؤية والقيود الأساسية للقناة' },
+    { id: 8, short: '٨. السلسلة والزوايا', title: '٨. سلسلة «مفاجآت بيتنا» والزوايا الثلاث' },
+    { id: 9, short: '٩. الأفكار الـ ٦', title: '٩. تنظيم الفيديوهات — الأفكار الأولية الستّ' },
+    { id: 10, short: '١٠. البحث والخطة', title: '١٠. خلاصة البحث (YT Studio) وخطة التنفيذ' }
+  ];
+
+  const totalSlides = slidesMeta.length;
+  let currentSlide = 1;
+  const arabicNums = ['١','٢','٣','٤','٥','٦','٧','٨','٩','١٠'];
+
+  function buildNavigationUI() {
+    const strip = document.getElementById('slideStrip');
+    const toc = document.getElementById('tocGrid');
+    strip.innerHTML = slidesMeta.map(s =>
+      `<button class="strip-chip ${s.id === 1 ? 'active' : ''}" data-slide="${s.id}" onclick="goToSlide(${s.id})">${s.short}</button>`
+    ).join('');
+    toc.innerHTML = slidesMeta.map(s =>
+      `<button class="toc-link ${s.id === 1 ? 'current' : ''}" data-slide="${s.id}" onclick="goToSlide(${s.id}); closeTOC();">${s.title}</button>`
+    ).join('');
+  }
+
+  function goToSlide(n) {
+    if (n < 1 || n > totalSlides) return;
+    document.getElementById('slide-' + currentSlide).classList.remove('active');
+    currentSlide = n;
+    const target = document.getElementById('slide-' + currentSlide);
+    target.classList.add('active');
+    target.scrollTop = 0;
+
+    document.getElementById('slideCounter').textContent = `${arabicNums[currentSlide - 1]} / ١٠`;
+    document.getElementById('prevBtn').disabled = currentSlide === 1;
+    document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+    document.getElementById('progressBar').style.width = ((currentSlide / totalSlides) * 100) + '%';
+
+    document.querySelectorAll('.strip-chip').forEach(el => {
+      const active = Number(el.dataset.slide) === currentSlide;
+      el.classList.toggle('active', active);
+      if (active) el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+    });
+    document.querySelectorAll('.toc-link').forEach(el => {
+      el.classList.toggle('current', Number(el.dataset.slide) === currentSlide);
+    });
+  }
+
+  function nextSlide() { if (currentSlide < totalSlides) goToSlide(currentSlide + 1); }
+  function prevSlide() { if (currentSlide > 1) goToSlide(currentSlide - 1); }
+  function openTOC() { document.getElementById('tocModal').classList.add('open'); }
+  function closeTOC() { document.getElementById('tocModal').classList.remove('open'); }
+
+  function openZoom(htmlContent) {
+    document.getElementById('zoomContent').innerHTML = htmlContent;
+    document.getElementById('zoomModal').classList.add('open');
+  }
+  function closeZoom() { document.getElementById('zoomModal').classList.remove('open'); }
+
+  document.addEventListener('click', e => {
+    const card = e.target.closest('.zoomable');
+    if (card && !e.target.closest('button') && !e.target.closest('a') && !e.target.closest('input') && !e.target.closest('select')) {
+      openZoom(card.innerHTML);
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    const tag = document.activeElement ? document.activeElement.tagName : '';
+    if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') {
+      if (e.key === 'Escape') document.activeElement.blur();
+      return;
+    }
+    if (e.key === 'ArrowLeft') nextSlide();
+    else if (e.key === 'ArrowRight') prevSlide();
+    else if (e.key === 'Home') goToSlide(1);
+    else if (e.key === 'End') goToSlide(totalSlides);
+    else if (e.key === 'Escape') { closeTOC(); closeZoom(); }
+  });
+
+  function showIdea(num, btn) {
+    document.querySelectorAll('.idea-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.idea-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('idea-' + num).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  /* ===== ALL 60 REAL VIDIQ KEYWORDS FROM KW RESEARCH PDF ===== */
+  const kwData = [
+    { idx: 1, kw: 'quran for kids', vol: 32359, comp: 'Medium', overall: 60.19, hub: 'القرآن للأطفال', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «quran recitation» و«short surah» في العناوين وقائمة التشغيل' },
+    { idx: 2, kw: 'short surah', vol: 4971, comp: 'Low', overall: 60.67, hub: 'القرآن للأطفال', strat: 'سلسلة + شورتس', note: 'سلسلة (Series) + شورتس: سلسلة تحفيظ السور القصيرة بالتكرار (الفاتحة، الإخلاص، المعوذتين)' },
+    { idx: 3, kw: 'arabic alphabet for kids', vol: 17849, comp: 'Medium', overall: 61.12, hub: 'الحروف واللغة', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «arabic alphabet» في عناوين سلسلة الحروف' },
+    { idx: 4, kw: 'arabic lessons', vol: 9960, comp: 'Low', overall: 61.53, hub: 'تعليم العربية', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة دروس عربية قصيرة ومرتبة (حروف، كلمات، جمل بسيطة) في قائمة تشغيل مستقلة' },
+    { idx: 5, kw: 'learn arabic', vol: 91059, comp: 'Medium', overall: 62.06, hub: 'تعليم العربية', strat: 'سلسلة', note: 'سلسلة (Series): المحور الرئيسي للعناوين الثنائية (مثل: Learn Arabic Easily) لكل فيديوهات التأسيس' },
+    { idx: 6, kw: 'arabic alphabet', vol: 65994, comp: 'Medium', overall: 62.61, hub: 'الحروف واللغة', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة تعليم الحروف العربية كاملة (دمج مع: arabic alphabet for kids, alif baa taa)' },
+    { idx: 7, kw: 'islamic stories for kids', vol: 85582, comp: 'Medium', overall: 63.78, hub: 'القصص الإسلامية', strat: 'دمج', note: 'دمج (Cluster): الكلمة الأهم في العنوان الإنجليزي بجانب «islamic stories»' },
+    { idx: 8, kw: 'arabic stories', vol: 24232, comp: 'Low', overall: 64.07, hub: 'القصص التربوية', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «arabic story» في قوائم تشغيل القصص التعليمية' },
+    { idx: 9, kw: 'best nasheed', vol: 21606, comp: 'Low', overall: 64.42, hub: 'الأناشيد', strat: 'دمج', note: 'دمج (Cluster): تُدمج في عناوين الفيديوهات المجمعة (Best Arabic Nasheed Compilation)' },
+    { idx: 10, kw: 'alif baa taa', vol: 121137, comp: 'Medium', overall: 65.93, hub: 'الحروف واللغة', strat: 'سلسلة + شورتس', note: 'سلسلة (Series) + شورتس: سلسلة وشورتس الحروف العربية (ألف باء تاء) — طلب عالمي ضخم وسهل التنفيذ' },
+    { idx: 11, kw: 'arabic story', vol: 24631, comp: 'Low', overall: 66.33, hub: 'القصص التربوية', strat: 'فيديو فردي', note: 'فيديو فردي (Standalone): قصص عربية قصيرة ومبسطة لتعليم المفردات لغير الناطقين بالعربية' },
+    { idx: 12, kw: 'arabic nasheed no music', vol: 4631, comp: 'Low', overall: 67.51, hub: 'الأناشيد', strat: 'دمج', note: 'دمج (Cluster): كلمة ذهبية دقيقة تُوضع في عنوان ووصف كل أنشودة لاستهداف الأهل الباحثين عن محتوى بدون موسيقى' },
+    { idx: 13, kw: 'arabic nasheed', vol: 135722, comp: 'Low', overall: 70.17, hub: 'الأناشيد', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «islamic nasheed» و«arabic nasheed no music»' },
+    { idx: 14, kw: 'islamic nasheed', vol: 105802, comp: 'Low', overall: 70.32, hub: 'الأناشيد', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة الأناشيد الإسلامية بدون موسيقى بترجمة إنجليزية على الشاشة' },
+    { idx: 15, kw: 'quran recitation', vol: 446675, comp: 'Medium', overall: 70.56, hub: 'القرآن للأطفال', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة تلاوة وترديد السور القصيرة للأطفال (دمج مع: quran for kids, short surah)' },
+    { idx: 16, kw: 'islamic stories', vol: 449284, comp: 'Low', overall: 76.11, hub: 'القصص الإسلامية', strat: 'سلسلة', note: 'سلسلة (Series): أولوية عالية للمغتربين — سلسلة قصص إسلامية للأطفال بعناوين ثنائية اللغة وترجمة CC' },
+    { idx: 17, kw: 'baby songs', vol: 301432, comp: 'High', overall: 63.67, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): منافسة عالية — تُستخدم فقط كوسم مساعد في أناشيد الحروف والأرقام للصغار' },
+    { idx: 18, kw: 'kids learning', vol: 139622, comp: 'Medium', overall: 64.28, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): كلمة عامة لوصف القناة وقوائم التشغيل التعليمية ثنائية اللغة' },
+    { idx: 19, kw: 'bedtime stories', vol: 720855, comp: 'High', overall: 64.87, hub: 'عام (اكتشاف واسع)', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة قصص هادئة قبل النوم للأطفال (بالعربية مع ترجمة إنجليزية CC)' },
+    { idx: 20, kw: 'children stories', vol: 52917, comp: 'Medium', overall: 65.43, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «kids stories» في الوسوم والوصف' },
+    { idx: 21, kw: 'children', vol: 148777, comp: 'Medium', overall: 66.93, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): كلمة مساعدة عامة تُستخدم فقط في الوصف والوسوم الإنجليزية' },
+    { idx: 22, kw: 'moral stories', vol: 319243, comp: 'Medium', overall: 68.46, hub: 'عام (اكتشاف واسع)', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة القصص الأخلاقية والتربوية (الصدق، الأمانة، بر الوالدين) بترجمة إنجليزية (CC)' },
+    { idx: 23, kw: 'songs for kids', vol: 129720, comp: 'Medium', overall: 69.80, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «arabic nasheed» و«no music» للوصول لأولياء الأمور الباحثين بالإنجليزية' },
+    { idx: 24, kw: 'kids stories', vol: 296342, comp: 'Low', overall: 77.01, hub: 'عام (اكتشاف واسع)', strat: 'سلسلة', note: 'سلسلة (Series): عناوين ثنائية اللغة وترجمة (CC) لسلسلة القصص لاستهداف الجاليات والمغتربين' },
+    { idx: 25, kw: 'بسم الله', vol: 17979, comp: 'Medium', overall: 60.11, hub: 'التربية الإسلامية', strat: 'فيديو فردي', note: 'فيديو فردي (Standalone) / شورتس: حلقة تأسيسية عن آداب التسمية بشخصيات العرائس' },
+    { idx: 26, kw: 'قصة سيدنا يوسف', vol: 26794, comp: 'Medium', overall: 60.26, hub: 'القصص الإسلامية', strat: 'فيديو فردي', note: 'فيديو فردي (Standalone): حلقة رئيسية (أو جزأين) ضمن سلسلة «قصص الانبياء للاطفال»' },
+    { idx: 27, kw: 'قرآن', vol: 46070, comp: 'Medium', overall: 60.81, hub: 'القرآن للأطفال', strat: 'دمج', note: 'دمج (Cluster): كلمة أساسية تُدمج في عناوين سلسلة تحفيظ السور القصيرة للأطفال' },
+    { idx: 28, kw: 'الغاز للاذكياء', vol: 52829, comp: 'Medium', overall: 60.82, hub: 'التحديات والألغاز', strat: 'سلسلة', note: 'سلسلة (Series): حلقات تحدي ألغاز لغوية وعلمية للأطفال (5 دقائق أو شورتس سريعة)' },
+    { idx: 29, kw: 'الحروف الهجائية للاطفال', vol: 16038, comp: 'Medium', overall: 61.26, hub: 'الحروف واللغة', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة تأسيس الحروف الهجائية بالتشكيل (حلقة لكل حرف + فيديو مجمع)' },
+    { idx: 30, kw: 'اناشيد اسلاميه', vol: 12305, comp: 'Low', overall: 61.35, hub: 'الأناشيد', strat: 'دمج', note: 'دمج (Cluster): صيغة بحث بدون نقطتين تُدمج في الوسوم والوصف مع «اناشيد اسلامية»' },
+    { idx: 31, kw: 'قصص رمضان', vol: 3985, comp: 'Low', overall: 61.45, hub: 'القصص الإسلامية', strat: 'سلسلة موسمية', note: 'سلسلة موسمية (Seasonal Series): سلسلة قصص وفوازير رمضان بشخصيات العرائس (تُجهز قبل الموسم)' },
+    { idx: 32, kw: 'اناشيد اطفال', vol: 21249, comp: 'Medium', overall: 61.56, hub: 'الأناشيد', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «أناشيد» في العناوين وقائمة تشغيل الأناشيد الرئيسية' },
+    { idx: 33, kw: 'اناشيد بدون موسيقى', vol: 14683, comp: 'Low', overall: 61.96, hub: 'الأناشيد', strat: 'دمج', note: 'دمج (Cluster): ميزة تنافسية أساسية تُضاف دائماً لعناوين الأناشيد لجذب أولياء الأمور' },
+    { idx: 34, kw: 'قصص دينية', vol: 46900, comp: 'Medium', overall: 62.04, hub: 'القصص الإسلامية', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «قصص الانبياء للاطفال» و«قصص رمضان» في قوائم التشغيل والوصف' },
+    { idx: 35, kw: 'كلمات', vol: 12786, comp: 'Low', overall: 62.50, hub: 'الحروف واللغة', strat: 'سلسلة + شورتس', note: 'سلسلة (Series) + شورتس: سلسلة «تحدي قراءة الكلمات بالتشكيل» (النمط الأنجح حالياً في الشورتس)' },
+    { idx: 36, kw: 'الصلاة على النبي', vol: 46425, comp: 'Medium', overall: 62.88, hub: 'التربية الإسلامية', strat: 'فيديو فردي', note: 'فيديو فردي (Standalone) / شورتس: فيديو تذكيري لطيف وشورتس لتعليم الأطفال فضل الصلاة على النبي' },
+    { idx: 37, kw: 'نشيد', vol: 13795, comp: 'Low', overall: 62.96, hub: 'الأناشيد', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «انشودة» في عناوين الأناشيد الفردية (نشيد الحروف / نشيد الصلاة)' },
+    { idx: 38, kw: 'قصص الانبياء للاطفال', vol: 16183, comp: 'Low', overall: 63.14, hub: 'القصص الإسلامية', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة قصص الأنبياء المبسطة للأطفال (تبدأ بقصة سيدنا يوسف ونوح ويونس)' },
+    { idx: 39, kw: 'سؤال وجواب', vol: 10407, comp: 'Low', overall: 63.18, hub: 'التحديات والألغاز', strat: 'سلسلة + شورتس', note: 'سلسلة (Series) + شورتس: سلسلة مسابقات تفاعلية سريعة (تحدي القراءة + سؤال وجواب لغوي وديني)' },
+    { idx: 40, kw: 'اناشيد اسلامية رائعة', vol: 9483, comp: 'Low', overall: 63.66, hub: 'الأناشيد', strat: 'دمج', note: 'دمج (Cluster): تُدمج في عناوين الفيديوهات المجمعة (Compilations) للأناشيد' },
+    { idx: 41, kw: 'اسماء الله الحسنى', vol: 37028, comp: 'Medium', overall: 64.28, hub: 'التربية الإسلامية', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة تعليم وشرح أسماء الله الحسنى للأطفال بقصص مبسطة' },
+    { idx: 42, kw: 'الغاز', vol: 143192, comp: 'Medium', overall: 64.42, hub: 'التحديات والألغاز', strat: 'سلسلة + شورتس', note: 'سلسلة (Series) + شورتس: سلسلة «تحدي الألغاز والفوازير» لرفع التفاعل والبقاء في الشورتس' },
+    { idx: 43, kw: 'اذكار المساء', vol: 226762, comp: 'Medium', overall: 65.81, hub: 'التربية الإسلامية', strat: 'سلسلة + شورتس', note: 'سلسلة (Series) + شورتس: تكملة لسلسلة الأذكار (أذكار المساء والنوم للأطفال بالتشكيل)' },
+    { idx: 44, kw: 'اناشيد دينية', vol: 37076, comp: 'Low', overall: 66.32, hub: 'الأناشيد', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «أناشيد اسلامية» في العناوين والوصف' },
+    { idx: 45, kw: 'انشودة', vol: 10157, comp: 'Low', overall: 67.29, hub: 'الأناشيد', strat: 'فيديو فردي', note: 'فيديو فردي (Standalone): أنشودة منفردة لكل موضوع (أنشودة الحروف، أنشودة الألوان، أنشودة النظافة)' },
+    { idx: 46, kw: 'اذكار الصباح', vol: 478503, comp: 'Medium', overall: 68.67, hub: 'التربية الإسلامية', strat: 'سلسلة + شورتس', note: 'سلسلة (Series) + شورتس: سلسلة أذكار الصباح اليومية للأطفال بالتشكيل والتكرار (فيديو مجمع + شورتس يومية)' },
+    { idx: 47, kw: 'اناشيد اسلامية', vol: 40653, comp: 'Low', overall: 69.48, hub: 'الأناشيد', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة أناشيد القيم والآداب الإسلامية للأطفال بدون موسيقى (دمج مع: اناشيد اسلاميه، اناشيد دينية)' },
+    { idx: 48, kw: 'اناشيد', vol: 93664, comp: 'Low', overall: 77.33, hub: 'الأناشيد', strat: 'سلسلة', note: 'سلسلة (Series): أولوية قصوى — سلسلة أناشيد تعليمية بدون موسيقى (حروف، أرقام، قيم) بشخصيات العرائس' },
+    { idx: 49, kw: 'كرتون', vol: 115219, comp: 'High', overall: 60.53, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): كلمة عالية المنافسة تُستخدم فقط ككلمة مساعدة في الوسوم والوصف' },
+    { idx: 50, kw: 'افلام كرتون', vol: 48005, comp: 'Medium', overall: 60.77, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «افلام كرتون اطفال» في الوصف والوسوم للاكتشاف الواسع' },
+    { idx: 51, kw: 'حيوانات', vol: 43761, comp: 'Medium', overall: 60.85, hub: 'عام (اكتشاف واسع)', strat: 'سلسلة', note: 'سلسلة (Series): سلسلة «مغامرات الحيوانات وأصواتها» (تأسيس مفردات + قصة مثل مغامرة الصحراء)' },
+    { idx: 52, kw: 'افلام كرتون اطفال', vol: 26631, comp: 'Medium', overall: 61.24, hub: 'عام (اكتشاف واسع)', strat: 'سلسلة', note: 'سلسلة (Series): حلقات مغامرات عرائس طويلة (5-8 دقائق) بأسلوب كرتوني تعليمي' },
+    { idx: 53, kw: 'قصه', vol: 53607, comp: 'Medium', overall: 61.56, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): صيغة بحث شائعة تُدمج في الوسوم مع «قصص اطفال»' },
+    { idx: 54, kw: 'حكاية', vol: 19919, comp: 'Medium', overall: 61.91, hub: 'عام (اكتشاف واسع)', strat: 'فيديو فردي', note: 'فيديو فردي (Standalone): حلقات فردية قصيرة (حكاية قبل النوم أو حكاية عن قيمة أخلاقية)' },
+    { idx: 55, kw: 'حكايات', vol: 66356, comp: 'Medium', overall: 62.99, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): تُدمج مع «قصص وحكايات» في عناوين القصص المسائية والتربوية' },
+    { idx: 56, kw: 'قناة اطفال', vol: 25155, comp: 'Medium', overall: 63.21, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): كلمة تعريفية لوصف القناة (Channel Keywords) والهوم بيج' },
+    { idx: 57, kw: 'قصص أطفال', vol: 19917, comp: 'Low', overall: 63.59, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): صيغة بالهمزة تُدمج مع «قصص اطفال» في الوصف والوسوم' },
+    { idx: 58, kw: 'قصص وحكايات', vol: 48469, comp: 'Medium', overall: 64.73, hub: 'عام (اكتشاف واسع)', strat: 'سلسلة', note: 'سلسلة (Series): قائمة تشغيل «قصص وحكايات كنوز الفصحى» للحلقات الطويلة' },
+    { idx: 59, kw: 'قصص', vol: 473227, comp: 'Medium', overall: 67.23, hub: 'عام (اكتشاف واسع)', strat: 'دمج', note: 'دمج (Cluster): كلمة عامة واسعة تُدمج في وصف ووسوم سلسلة قصص الأطفال' },
+    { idx: 60, kw: 'قصص اطفال', vol: 78358, comp: 'Low', overall: 70.39, hub: 'عام (اكتشاف واسع)', strat: 'سلسلة', note: 'سلسلة (Series): العمود الفقري للقناة — سلسلة قصص أطفال تربوية بالتشكيل بشخصيات العرائس' }
+  ];
+
+  let activeStrat = 'all';
+
+  function setStratFilter(strat, btn) {
+    activeStrat = strat;
+    document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderKW();
+  }
+
+  function compBadge(c) {
+    if (c === 'Low') return '<span class="badge b-teal">Low</span>';
+    if (c === 'Medium') return '<span class="badge b-gold">Medium</span>';
+    return '<span class="badge b-coral">High</span>';
+  }
+
+  function stratBadge(s) {
+    if (s === 'سلسلة') return '<span class="badge b-teal">سلسلة</span>';
+    if (s === 'سلسلة + شورتس') return '<span class="badge b-blue">سلسلة + شورتس</span>';
+    if (s === 'دمج') return '<span class="badge b-purple">دمج</span>';
+    if (s === 'فيديو فردي') return '<span class="badge b-gold">فيديو فردي</span>';
+    return '<span class="badge b-coral">سلسلة موسمية</span>';
+  }
+
+  function renderKW() {
+    const q = document.getElementById('kwSearch').value.trim().toLowerCase();
+    const hub = document.getElementById('kwHubFilter').value;
+    const sortMode = document.getElementById('kwSort').value;
+
+    let rows = kwData.filter(item => {
+      if (activeStrat !== 'all' && item.strat !== activeStrat) return false;
+      if (hub !== 'all' && item.hub !== hub) return false;
+      if (q) {
+        const hay = `${item.kw} ${item.hub} ${item.strat} ${item.note}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    if (sortMode === 'overall_desc') rows.sort((a, b) => b.overall - a.overall);
+    else if (sortMode === 'vol_desc') rows.sort((a, b) => b.vol - a.vol);
+    else if (sortMode === 'comp_asc') {
+      const rank = { Low: 1, Medium: 2, High: 3 };
+      rows.sort((a, b) => (rank[a.comp] - rank[b.comp]) || (b.overall - a.overall));
+    } else rows.sort((a, b) => a.idx - b.idx);
+
+    document.getElementById('kwCountLabel').textContent = `يعرض: ${rows.length} من 60`;
+    const tbody = document.getElementById('kwTableBody');
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:28px;color:var(--muted);">لا توجد كلمات مطابقة لخيارات البحث الحالية.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td style="color:var(--muted);font-weight:700;">${r.idx}</td>
+        <td style="font-weight:800;color:var(--navy);">${r.kw}</td>
+        <td><strong class="ltr-num">${r.vol.toLocaleString('en-US')}</strong></td>
+        <td>${compBadge(r.comp)}</td>
+        <td><span class="badge b-navy ltr-num">${r.overall.toFixed(2)}</span></td>
+        <td style="font-size:.81rem;color:var(--muted);">${r.hub}</td>
+        <td>${stratBadge(r.strat)}</td>
+        <td style="font-size:.82rem;line-height:1.55;min-width:240px;">${r.note}</td>
+      </tr>
+    `).join('');
+  }
+
+  /* ===== 5 COMPETITORS FULL VERBATIM DATA (NO OMISSIONS) ===== */
+  const competitorsData = [
+    {
+      id: 'zakaria',
+      num: '١',
+      name: 'Learn with Zakaria - تعلم مع زكريا',
+      handle: '@LearnWithZakaria',
+      url: 'https://www.youtube.com/@LearnWithZakaria/videos',
+      tier: 'قناة كبرى',
+      tierBadge: 'b-navy',
+      cardColor: 'card-gold',
+      rating: '⭐️⭐️⭐️⭐️⭐️',
+      subs: '6.87M',
+      videos: '633',
+      hasWorkVideo: true,
+      workVideoUrl: 'https://youtu.be/XIVWZX49_Ak',
+      outliers: [
+        { label: 'Vid 1', url: 'https://youtu.be/OQs8g1DN55o' },
+        { label: 'Vid 2', url: 'https://youtu.be/edL3W38ODd4' },
+        { label: 'Vid 3', url: 'https://youtu.be/LyzupN62MGA' },
+        { label: 'Vid 4', url: 'https://youtu.be/gr3XKopIsVA' },
+        { label: 'Vid 5', url: 'https://youtu.be/LyzupN62MGA' }
+      ],
+      socials: [
+        { label: 'Facebook', url: 'https://www.facebook.com/LearnWithZakaria/' },
+        { label: 'Instagram', url: 'https://www.instagram.com/LearnWithZakaria' },
+        { label: 'TikTok', url: 'https://tiktok.com/@LearnWithZakariaOfficial' },
+        { label: 'Spotify', url: 'https://open.spotify.com/artist/5fyJCqAfLg3nmP8q69vAwY' }
+      ],
+      shortStrength: 'تنوع الأنماط + خيارات بدون موسيقى + إعادة تدوير ذكية + شبكة قنوات موازية.',
+      shortWeakness: 'فجوة بين القديم (103M) والحديث (22K)، تراجع آخر 28 يوماً (13.72M بانخفاض 3.4M)، وتوقف بعض السلاسل وأخطاء قوائم التشغيل.',
+      whyItWorks: [
+        'بداية سريعة تشد الانتباه من أول ثانية: المشهد التمهيدي القصير قبل التعليق الصوتي (اللي فيه حركة صوتية ومفاجأة وارتباك في البيت) بيخلق فضول وحركة تخلي الطفل يكمّل الحلقة بدل ما يخرج بدري.',
+        'صورة مصغرة واضحة ومباشرة بدون زحمة: التركيز على عنصر أو تعبير واضح مع الكلمة الرئيسية (زي تعبير الخضّة والصرصور والكلمة الواضحة) بيسهّل فهم الفكرة بسرعة من أول نظرة، وده بيخدم البساطة اللي ماشية عليها «كنوز الفصحى».',
+        'دمج الترفيه بالسلوك واللغة: تحويل موقف يومي طريف (خضّة أو فوضى أو حشرة في البيت) لدرس عملي في النظافة والنظام ومعرفة المعلومة، وده بيقرب المحتوى لأولياء الأمور وبيسمح بدمج كلمات التأسيس والتشكيل بشكل طبيعي.',
+        'بناء سلسلة مستمرة مش حلقة يتيمة: نموذج «كيف وماذا ولماذا» أو الأسئلة المرتبة بيفتح باب لسلسلة طويلة ومترابطة بدل ما تتوقف بعد كام حلقة وتفقد استمراريتها.'
+      ],
+      fullStrengths: [
+        'تنوع الأنماط: الجمع بين التعليم المنهجي المباشر، والأغاني التفاعلية، والرسوم الكرتونية، والأفلام العلمية القصيرة.',
+        'مراعاة الخصوصية التربوية: توفير خيارات بديلة بدون موسيقى، وتضمين محتوى ديني وأخلاقي موجه.',
+        'إعادة التدوير الذكي للمحتوى: تقديم الفكرة الواحدة بصيغ متعددة (أناشيد، حلقات تعليمية، ألعاب تفاعلية، ومقاطع Shorts سريعة) لتعزيز ترسيخ المعلومة لدى الطفل.',
+        'شبكة القنوات المتفرقة والامتداد اللغوي: (1) عالم ليلى (Layla\'s World): 271 ألف مشترك (أناشيد وتعليم إنجليزية وفرنسية)، (2) Learn With Zakaria - English: 24.3 ألف مشترك، (3) Apprends avec Zakaria بالفرنسية: 17.9 ألف مشترك.'
+      ],
+      fullWeaknesses: [
+        'الفجوة بين الكتالوج القديم والجديد: الأرقام المليونية الكبيرة (103M لأغنية الحروف و29M لسورة الفاتحة) جاءت عبر سنوات طويلة، بينما الفيديوهات الأحدث (22K في 8 أيام أو 156K في 4 أسابيع) توضح أن الزخم الجديد يحتاج إيقاعاً وهوية مستمرة.',
+        'أثر الإيقاع والاستمرارية على المنحنى: نزول آخر 28 يوماً (13.72M بانخفاض 3.4M) وآخر 90 يوماً (73.47M بانخفاض 13M)، وتوقف سلاسل مثل «كيف ماذا ولماذا؟» عند 5 دروس أو «هل تعلم؟» عند فيديو واحد.',
+        'التدقيق والتركيز بدل التشتت: وجود أخطاء في أسماء قوائم مثل Shorst وMatch wotd with picture game وضعف نمو القنوات الفرعية الأجنبية (24.3K و17.9K) مقارنة بالقناة الأساسية.',
+        'الخلاصة التطبيقية: نأخذ الأساسيات الثابتة + الإيقاع السريع في أول ثوانٍ + التفاعل، ونطبّقها بانتظام على شخصيات العرائس وهوية «كنوز الفصحى» مع مراجعة دقيقة لكل عنوان وقائمة تشغيل.'
+      ]
+    },
+    {
+      id: 'msbeno',
+      num: '٢',
+      name: 'Ms Beno Toddlers',
+      handle: '@MsBenoToddlers',
+      url: 'https://www.youtube.com/@MsBenoToddlers/videos',
+      tier: 'حجم متقارب',
+      tierBadge: 'b-teal',
+      cardColor: 'card-teal',
+      rating: '',
+      subs: '48.3K',
+      videos: '497',
+      hasWorkVideo: false,
+      workVideoUrl: '',
+      outliers: [],
+      socials: [
+        { label: 'TikTok', url: 'https://www.tiktok.com/@msbenotv?_t=8qM2uqKStsu&_r=1' },
+        { label: 'Instagram', url: 'https://www.instagram.com/ms_beno_/' },
+        { label: 'Telegram', url: 'https://t.me/MsBeno' },
+        { label: 'Facebook', url: 'https://www.facebook.com/profile.php?id=100095173243703' }
+      ],
+      shortStrength: 'إبراز «بدون موسيقى» في العناوين + تجميعات طويلة (20–50 دقيقة وحتى 4 ساعات حققت 62K–79K) + مخارج الفصحى.',
+      shortWeakness: 'تكرار رفع نفس الفيديو مرتين (Duplicate Content) + ضعف SEO (عنوان My Video) + تشتت اسم الشخصية + هبوط الحديث (380–2.6K) وغياب القصص.',
+      whyItWorks: [],
+      fullStrengths: [
+        '1. الاستثمار الناجح في ميزة «بدون موسيقى» (No Music 🚫): خصصت القناة قسماً كبيراً جداً من إنتاجها لنسخ بدون موسيقى مع الإشارة لذلك صراحة في العناوين استجابة لقطاع واسع من العائلات.',
+        '2. قوة التجميعات الطويلة (Compilations) وتحقيق أوقات مشاهدة عالية: ماراثونات تعليمية بين 20 و50 دقيقة وحتى ساعة وساعتين و4 ساعات متواصلة حققت أعلى المشاهدات: رحلة استكشاف الطبيعة (62 ألف)، تعليم النطق (67 ألف)، الفيديو الشامل (79 ألف) — تفوق عدد المشتركين (48.3 ألف).',
+        '3. التركيز على النطق ومخارج الألفاظ باللغة العربية الفصحى: سلاسل واضحة لتعليم نطق الكلمات والمفردات وتطوير حصيلة الطفل اللغوية.',
+        '4. غزارة الإنتاج وتغطية الأساسيات التعليمية: رصيد يقارب 500 فيديو يغطي أصوات الحيوانات، المزرعة، الغابة، الألوان، الأرقام، والفواكه.'
+      ],
+      fullWeaknesses: [
+        'تكرار رفع نفس الفيديوهات (Duplicate Content): رفع نفس المحتوى مرتين بنفس الطول بالثانية (إنجليزي/عربي أو بموسيقى/بدونها مثل 53:22 و1:56:39 و1:20:17) مما يشتت الخوارزميات ويقسم التفاعل.',
+        'ضعف كبير في تهيئة العناوين والكلمات المفتاحية (SEO): رفع فيديو بعنوان عشوائي مجهول (My Video)، وتكرار نفس العنوان الحرفي عدة مرات دون تمييز الأجزاء أو التواريخ.',
+        'تشتت الهوية والخلط الإملائي في اسم الشخصية: تظهر بـ 5 صيغ متباينة (Ms Beno، Miss Beno، Ms. Pino، مس بينو، مس بنيو) مما يضعف العلامة التجارية والبحث المباشر.',
+        'تراجع حاد في مشاهدات الفيديوهات القصيرة والحديثة: تحصد المقاطع المنفردة الحديثة أرقاماً متواضعة بين 380 و500 و1,000 إلى 2,600 مشاهدة فقط.',
+        'الحصر في نمط نمطي دون التوسع في محتوى قصصي: الاقتصار على قوائم التعداد التلقينية دون قصص أو رسوم تفاعلية تبني ولاءً مستمراً.'
+      ]
+    },
+    {
+      id: 'rayan',
+      num: '٣',
+      name: 'Rayan Arabic TV | يان بالعربي',
+      handle: '@rayanarabictv',
+      url: 'https://www.youtube.com/@rayanarabictv',
+      tier: 'قناة متنامية قوية',
+      tierBadge: 'b-purple',
+      cardColor: 'card-purple',
+      rating: '',
+      subs: '479K',
+      videos: '78',
+      hasWorkVideo: false,
+      workVideoUrl: '',
+      outliers: [],
+      socials: [
+        { label: 'Instagram', url: 'https://www.instagram.com/rayanarabic.tv?utm_source=qr' },
+        { label: 'TikTok', url: 'https://tiktok.com/@rayanarabictv' },
+        { label: 'Buy Me a Coffee', url: 'https://buymeacoffee.com/Rayanarabictv' }
+      ],
+      shortStrength: 'كفاءة مليونية بـ 78 فيديو فقط (15M، 13M) + تقسيم عمري (1–3 و3–6 سنوات) + معالجة تحديات الأسرة + المعلمة زينب.',
+      shortWeakness: 'بطء النشر (78 فيديو وتباعد شهور: 1، 3، 4، 6 أشهر) + تفاوت قوائم التشغيل (32 مقابل 4 و6 و7) + فجوة الحديث (37K للألوان).',
+      whyItWorks: [],
+      fullStrengths: [
+        'كفاءة استثنائية ونسب مشاهدة مليونية مقارنة بعدد الفيديوهات والمشتركين: رغم امتلاكها 78 فيديو و479 ألف مشترك فقط، حققت: أسماء وأصوات حيوانات المزرعة (15 مليون مشاهدة)، كلمات الطفل الأولى وتعليم النطق (13 مليون، 7.3 مليون، 7 مليون، 6.2 مليون)، حيوانات الغابة (5.8 مليون).',
+        'التقسيم التربوي المنهجي بحسب الفئات العمرية: المرحلة الأولى (1 إلى 3 سنوات) «كلمات الطفل الأولى» بمحفزات منخفضة؛ المرحلة الثانية (3 إلى 6 سنوات) مواضيع معرفية أشمل كالمهن والحواس والكواكب والاتجاهات والحساب البسيط.',
+        'معالجة التحديات السلوكية والتربوية اليومية للأسرة: التدريب على استخدام المرحاض (Potty Training)، روتين النوم والعادات الصحية والنظافة، استقبال مولود جديد والتهيئة للمدرسة، والفعاليات الدينية (رمضان وعيد الأضحى).',
+        'تبني فلسفة المحتوى منخفض التحفيز وخيارات بدون موسيقى: تقليل المؤثرات السمعية والبصرية الصاخبة وتوفير قائمة لأغاني الحضانة بدون موسيقى.',
+        'وجود الشخصية الإنسانية التفاعلية («المعلمة زينب»): تعزيز ارتباط الطفل بالمتحدثة وتسهيل محاكاة مخارج الحروف والكلمات.'
+      ],
+      fullWeaknesses: [
+        '1. محدودية الإنتاج وبطء وتيرة النشر (Upload Frequency): إنتاج 78 فيديو فقط عبر مسار القناة مع تباعد زمني يصل لأشهر (منذ شهر، 3 أشهر، 4 أشهر، و6 أشهر)، مما يقلل الاستفادة من خوارزميات التوصية المستمرة.',
+        '2. التفاوت العددي الحاد بين قوائم التشغيل: تركّز الإنتاج في قائمتي المرحلتين الأولى والثانية (32 فيديو لكل منهما) مقابل: قائمة رمضان (4 فيديوهات فقط)، قائمة الأغاني بدون موسيقى (6 فيديوهات فقط)، وقائمة النظافة والروتين (7 فيديوهات فقط).',
+        '3. اتساع الفجوة بين المشاهدات الحديثة والنجاحات القديمة: تحصد المقاطع القديمة الملايين بينما تتراوح الحديثة بين عشرات ومئات الآلاف (فيديو الألوان 37 ألفاً، روتين النوم 289 ألفاً) لبطء تدوير المشتركين.'
+      ]
+    },
+    {
+      id: 'siraj',
+      num: '٤',
+      name: 'SIRAJ',
+      handle: '@sirajshowofficial',
+      url: 'https://www.youtube.com/@sirajshowofficial',
+      tier: 'قناة كبرى',
+      tierBadge: 'b-navy',
+      cardColor: 'card-navy',
+      rating: '',
+      subs: '793K',
+      videos: '381',
+      hasWorkVideo: false,
+      workVideoUrl: '',
+      outliers: [],
+      socials: [
+        { label: 'Official Website (siraj.tv)', url: 'http://www.siraj.tv' },
+        { label: 'Facebook', url: 'https://facebook.com/SirajShow' },
+        { label: 'Instagram', url: 'https://instagram.com/SirajShow' },
+        { label: 'App Store', url: 'https://apps.apple.com/au/app/siraj-%D8%B3-%D8%B1%D8%A7%D8%AC/id1162696998' }
+      ],
+      shortStrength: 'علامة تعليمية كبرى (793K مشترك و381 فيديو) + حضور منصاتي متكامل (موقع siraj.tv + تطبيق App Store + FB/IG).',
+      shortWeakness: 'لم تُحدَّد لها نقاط ضعف منفردة في الملف (خانات القوة والضعف في التصدير مكررة نصياً من تحليل Rayan Arabic TV — معروضة كاملة بالتفاصيل).',
+      whyItWorks: [],
+      fullStrengths: [
+        'البيانات المسجّلة لقناة SIRAJ (@sirajshowofficial): 793K مشترك • 381 فيديو • علامة عابرة للمنصات تمتلك موقعاً رسمياً (siraj.tv) وتطبيقاً على متجر أبل (App Store) وحسابات Facebook وInstagram.',
+        'ملاحظة شمولية البيانات من الملف المصدر: في ملف البيانات المُصدّر لهذه القناة، أُدرجت النقاط التحليلية التالية نصياً كما وردت: كفاءة نسب المشاهدة (15M، 13M، 7.3M، 7M، 6.2M، 5.8M)، التقسيم العمري (1–3 و3–6 سنوات)، معالجة التحديات السلوكية (Potty Training، روتين النوم، استقبال مولود جديد، رمضان والأضحى)، المحتوى منخفض التحفيز وخيارات بدون موسيقى، والشخصية الإنسانية التفاعلية («المعلمة زينب»).'
+      ],
+      fullWeaknesses: [
+        'ملاحظة المراجعة: لم يتم إضافة نص ضعف منفصل خاص بـ SIRAJ عن التحليل المكرر في ملف التصدير، والنص المُدرج بالملف يتضمن: (1) محدودية الإنتاج وبطء وتيرة النشر، (2) التفاوت العددي بين قوائم التشغيل (32 مقابل 4 و6 و7)، (3) اتساع الفجوة بين المشاهدات الحديثة (37K و289K) والنجاحات القديمة.'
+      ]
+    },
+    {
+      id: 'salem',
+      num: '٥',
+      name: '📚 سالم وغانم | العربية للأطفال',
+      handle: '@salem.and.ghanem',
+      url: 'https://www.youtube.com/@salem.and.ghanem',
+      tier: 'حجم متقارب',
+      tierBadge: 'b-coral',
+      cardColor: 'card-coral',
+      rating: '',
+      subs: '9.95K',
+      videos: '165',
+      hasWorkVideo: false,
+      workVideoUrl: '',
+      outliers: [],
+      socials: [],
+      shortStrength: 'مشاهدات تفوق المشتركين بأضعاف (90K لعادات الصباح = ~9 أضعاف) + تخصص هادئ بلا موسيقى + قصص قيمية + تشكيل دقيق.',
+      shortWeakness: 'ضعف التحويل لمشتركين (9.95K فقط رغم 165 فيديو) + تباطؤ النشر (منذ 3 و4 و6–9 أشهر) + مدد قصيرة (2–5 دقائق) + عناوين إنجليزية أحياناً.',
+      whyItWorks: [],
+      fullStrengths: [
+        'كفاءة المشاهدات وتخطي قاعدة المشتركين بأضعاف مضاعفة: رغم أقل من 10 آلاف مشترك، حققت: فيديو «عَادَات الصَّبَاح» (90 ألف مشاهدة — قرابة 9 أضعاف المشتركين)، «حيوانات المزرعة للأطفال» (55 ألف)، «رجل الشرطة» (41 ألف)، «الشاطئ» (32 ألف) — مما يثبت ثقة الخوارزميات.',
+        'التخصص في نموذج «المحتوى الهادئ بلا موسيقى ولا مشتتات»: التركيز الصريح في العناوين والتصميم على عبارات «بلا موسيقى»، «قصة هادئة»، و«تعلّم هادئ بلا مشتّتات» (Low-Stimulation).',
+        'الدمج بين المفردات اللغوية والقصص السلوكية والقيمية: المشاركة والصداقة («فقاعات في الحديقة»)، الثقة والمثابرة («ألعاب الحاسوب»)، «ريم تستطيع»، الأضداد («كبير وصغير»)، والمفرد والجمع («واحد مفرد»).',
+        'سلامة اللغة العربية والتشكيل الدقيق: وضع التشكيل والحركات الإعرابية في معظم العناوين (مثل: القِطَارُ، عَادَات الصَّبَاح، وَاحِدٌ مُفْرَدٌ) لتعزيز الثقة في سلامة الفصحى.'
+      ],
+      fullWeaknesses: [
+        'ضعف معدل تحويل المشاهدين إلى مشتركين (Low Conversion Rate): عالقة عند 9.95 ألف مشترك رغم 165 فيديو ومشاهدات 20–90 ألفاً بسبب غياب دعوة الاشتراك (Call-To-Action) أو السلسلة المستمرة.',
+        'بطء وتيرة النشر وتباعد الفترات الزمنية: آخر فيديو منذ 3 أشهر («مطر يا مطر»)، والقبله منذ 4 أشهر، ومعظم الإنتاج قبل 6 إلى 9 أشهر مما يضعف الزخم التنافسي.',
+        'قِصر مدد الفيديوهات والغياب الكامل لـ «التجميعات الطويلة» (Compilations): تتراوح جميع الفيديوهات بين دقيقتين و5 دقائق فقط وتفتقر لماراثونات 20 إلى 60+ دقيقة لحصد ساعات المشاهدة.',
+        'تشتت في صياغة العناوين ولغات الاستهداف: صياغة بعض العناوين بالإنجليزية بالكامل مثل «Airplane ✈ | Airplane for Kids | Modern Standard Arabic» مما يشتت الجمهور المستهدف.'
+      ]
+    }
+  ];
+
+  function renderCompetitors() {
+    const tbody = document.getElementById('compTableBody');
+    const grid = document.getElementById('compCardsGrid');
+    if (!tbody || !grid) return;
+
+    tbody.innerHTML = competitorsData.map(c => `
+      <tr>
+        <td><strong>${c.num}</strong></td>
+        <td>
+          <strong><a href="${c.url}" target="_blank" rel="noopener" style="color:var(--navy);text-decoration:none;">${c.name}</a></strong>
+          <div style="margin-top:4px;">
+            <span class="badge ${c.tierBadge}">${c.tier}</span>
+            ${c.rating ? `<span style="margin-right:4px;">${c.rating}</span>` : ''}
+          </div>
+          <div style="font-size:.76rem;color:var(--muted);margin-top:2px;" dir="ltr">${c.handle}</div>
+        </td>
+        <td><strong class="ltr-num">${c.subs}</strong></td>
+        <td><strong class="ltr-num">${c.videos}</strong></td>
+        <td style="min-width:260px;">
+          <div style="margin-bottom:6px;"><span class="badge b-teal">المميزات</span> <span style="font-size:.82rem;">${c.shortStrength}</span></div>
+          <div><span class="badge b-coral">العيوب</span> <span style="font-size:.82rem;">${c.shortWeakness}</span></div>
+        </td>
+        <td>
+          ${c.hasWorkVideo
+            ? `<span class="badge b-gold">نعم: فيديو 1 + 4 Outliers</span><div style="margin-top:4px;font-size:.76rem;"><a href="${c.workVideoUrl}" target="_blank" rel="noopener" style="color:var(--teal);font-weight:700;">▶ مشاهدة فيديو العمل</a></div>`
+            : `<span class="badge b-purple">لا يوجد فيديو للعمل عليه بعد</span>`}
+        </td>
+        <td>
+          <button class="btn-detail" onclick="openCompDetail('${c.id}')">🔍 اضغط هنا للمزيد من التفاصيل</button>
+        </td>
+      </tr>
+    `).join('');
+
+    grid.innerHTML = competitorsData.map((c, idx) => `
+      <div class="card ${c.cardColor} zoomable" ${idx === 4 ? 'style="grid-column: 1 / -1;"' : ''}>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <h3>${c.num}. ${c.name} (<span class="ltr-num">${c.subs}</span> مشترك • <span class="ltr-num">${c.videos}</span> فيديو)</h3>
+          ${c.hasWorkVideo
+            ? `<span class="badge b-gold">✅ بها فيديو للعمل عليه</span>`
+            : `<span class="badge b-purple">⏳ بدون فيديو عمل حتى الآن</span>`}
+        </div>
+        <ul>
+          <li><strong>أهم نقاط القوة:</strong> ${c.shortStrength}</li>
+          <li><strong>أهم نقاط الضعف:</strong> ${c.shortWeakness}</li>
+          ${c.hasWorkVideo
+            ? `<li><strong>فيديو العمل المقترح (لماذا ننفذه؟):</strong> بداية خاطفة بالبيت (خضّة الصرصور) + صورة مصغرة بدون زحمة + دمج الترفيه بالنظافة + سلسلة مستمرة.</li>`
+            : `<li><strong>منصات إضافية:</strong> ${c.socials.length ? c.socials.map(s => s.label).join(' • ') : 'لا يوجد حسابات إضافية مضافة'}</li>`}
+        </ul>
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button class="btn-detail" onclick="openCompDetail('${c.id}')">🔍 اضغط هنا للمزيد من التفاصيل الكاملة</button>
+          <a class="comp-link-pill" href="${c.url}" target="_blank" rel="noopener">▶ فتح القناة على يوتيوب</a>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openCompDetail(id) {
+    const c = competitorsData.find(x => x.id === id);
+    if (!c) return;
+    const html = `
+      <div style="margin-bottom:14px;border-bottom:2px solid var(--border);padding-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <h3 style="font-family:'Amiri',serif;font-size:1.45rem;color:var(--navy);">${c.num}. ${c.name} ${c.rating || ''}</h3>
+          <span class="badge ${c.tierBadge}">${c.tier}</span>
+        </div>
+        <div style="margin-top:6px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <span class="badge b-navy ltr-num">${c.subs} مشترك</span>
+          <span class="badge b-teal ltr-num">${c.videos} فيديو</span>
+          <a class="comp-link-pill" href="${c.url}" target="_blank" rel="noopener">▶ رابط القناة: <span dir="ltr">${c.handle}</span></a>
+        </div>
+      </div>
+
+      ${c.hasWorkVideo ? `
+        <div class="comp-detail-box" style="background:#FFF8E7;border-color:#E7D29A;">
+          <h4>🎬 فيديو العمل المقترح وسبب النجاح (Why it works? — هننفذه ليه؟)</h4>
+          <p style="margin-bottom:8px;"><strong>رابط فيديو العمل الأساسي:</strong> <a href="${c.workVideoUrl}" target="_blank" rel="noopener" style="color:var(--teal);font-weight:700;" dir="ltr">${c.workVideoUrl}</a></p>
+          <ul>${c.whyItWorks.map(w => `<li>${w}</li>`).join('')}</ul>
+          <div style="margin-top:10px;">
+            <strong>فيديوهات Outliers مرجعية:</strong>
+            <div style="margin-top:4px;display:flex;flex-wrap:wrap;gap:4px;">
+              ${c.outliers.map(o => `<a class="comp-link-pill" href="${o.url}" target="_blank" rel="noopener">▶ ${o.label}</a>`).join('')}
+            </div>
+          </div>
+        </div>
+      ` : `
+        <div class="comp-detail-box" style="background:#F8F6FC;border-color:#D8CEE8;">
+          <h4>🎬 حالة فيديو العمل (1 Video to work on &amp; Outliers)</h4>
+          <p style="font-size:.88rem;color:var(--muted);">لم يتم تحديد فيديو مخصص للعمل عليه أو فيديوهات Outliers لهذه القناة حتى الآن (قناة «Learn with Zakaria» هي الوحيدة المحدّد لها فيديو للعمل عليه حالياً).</p>
+        </div>
+      `}
+
+      <div class="comp-detail-box" style="border-right:4px solid var(--teal);">
+        <h4>✅ كافة نقاط القوة بالتفصيل (Strengths)</h4>
+        <ul>${c.fullStrengths.map(s => `<li>${s}</li>`).join('')}</ul>
+      </div>
+
+      <div class="comp-detail-box" style="border-right:4px solid var(--coral);">
+        <h4>⚠️ كافة نقاط الضعف بالتفصيل (Weaknesses)</h4>
+        <ul>${c.fullWeaknesses.map(w => `<li>${w}</li>`).join('')}</ul>
+      </div>
+
+      <div class="comp-detail-box">
+        <h4>🌐 الحسابات والمنصات الأخرى (Other social media)</h4>
+        ${c.socials.length
+          ? `<div style="display:flex;flex-wrap:wrap;gap:6px;">${c.socials.map(s => `<a class="comp-link-pill" href="${s.url}" target="_blank" rel="noopener">🔗 ${s.label}</a>`).join('')}</div>`
+          : `<p style="font-size:.88rem;color:var(--muted);">لا يوجد حسابات إضافية مسجلة لهذه القناة.</p>`}
+      </div>
+    `;
+    openZoom(html);
+  }
+
+  buildNavigationUI();
+  renderCompetitors();
+  renderKW();
+  goToSlide(1);
+</script>
+</body>
+</html>
